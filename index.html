@@ -438,10 +438,9 @@
 
         .quotient-row {
             display: flex;
-            justify-content: flex-end;
             min-height: 2.5rem;
-            padding-right: 8px;
             margin-bottom: 4px;
+            margin-left: 70px; /* space for divisor */
         }
 
         .quotient-digit {
@@ -498,15 +497,14 @@
         /* Work rows */
         .work-rows {
             margin-top: 8px;
+            margin-left: 70px; /* same as quotient to align with dividend */
             min-height: 150px;
         }
 
         .work-row {
             display: flex;
-            justify-content: flex-end;
             min-height: 2.5rem;
             align-items: center;
-            padding-right: 8px;
             animation: slideIn 0.3s ease;
         }
 
@@ -515,9 +513,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        .work-row.subtract {
+            position: relative;
+        }
+        
         .work-row.subtract::before {
             content: '−';
-            margin-right: 4px;
+            position: absolute;
+            left: -1.2em;
             color: var(--coral);
             font-weight: 700;
         }
@@ -1148,9 +1151,12 @@
                 }
 
                 const digits = row.value.toString().split('');
-                const padding = dividendDigits.length - row.position - digits.length + 1;
+                // Align so the rightmost digit of the value is under row.position
+                const totalSlots = dividendDigits.length;
+                const rightmostPosition = row.position; // where the last digit should go
+                const startPosition = rightmostPosition - digits.length + 1;
                 
-                for (let i = 0; i < padding; i++) {
+                for (let i = 0; i < startPosition; i++) {
                     const spacer = document.createElement('span');
                     spacer.className = 'work-digit';
                     spacer.innerHTML = '&nbsp;';
@@ -1166,6 +1172,15 @@
                     span.textContent = d;
                     div.appendChild(span);
                 });
+                
+                // Add trailing spaces to fill remaining slots
+                const endPosition = startPosition + digits.length;
+                for (let i = endPosition; i < totalSlots; i++) {
+                    const spacer = document.createElement('span');
+                    spacer.className = 'work-digit';
+                    spacer.innerHTML = '&nbsp;';
+                    div.appendChild(spacer);
+                }
 
                 workEl.appendChild(div);
             });
