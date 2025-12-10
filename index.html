@@ -3,24 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Division Pal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>Long Division Copilot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f8f5f0;
+            --bg: #c4c4c4;
             --card: #ffffff;
-            --primary: #2563eb;
-            --primary-light: #dbeafe;
-            --success: #16a34a;
-            --success-light: #dcfce7;
-            --warning: #f59e0b;
-            --warning-light: #fef3c7;
-            --error: #dc2626;
-            --error-light: #fee2e2;
-            --text: #1e293b;
-            --text-muted: #64748b;
-            --highlight: #fef08a;
-            --border: #e2e8f0;
+            --blue: #4285f4;
+            --blue-dark: #3367d6;
+            --yellow: #f4b400;
+            --yellow-dark: #db9e00;
+            --coral: #ea4335;
+            --coral-light: #f87171;
+            --green: #34a853;
+            --green-dark: #2d8a47;
+            --text: #1a1a1a;
+            --text-muted: #5f5f5f;
+            --shadow: rgba(0,0,0,0.2);
         }
 
         * {
@@ -30,7 +29,7 @@
         }
 
         body {
-            font-family: 'Fredoka', sans-serif;
+            font-family: 'Lexend', sans-serif;
             background: var(--bg);
             min-height: 100vh;
             color: var(--text);
@@ -38,326 +37,529 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1100px;
             margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            text-align: center;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, #f97316, #eab308);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.05);
-        }
-
-        .subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            margin-bottom: 24px;
-            font-size: 1.1rem;
-        }
-
-        /* Setup Screen */
-        .setup-card {
-            background: var(--card);
-            border-radius: 20px;
-            padding: 32px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            max-width: 450px;
-            margin: 0 auto;
-        }
-
-        .setup-card h2 {
-            font-size: 1.4rem;
-            margin-bottom: 24px;
-            text-align: center;
             color: var(--text);
         }
 
-        .option-group {
-            margin-bottom: 20px;
-        }
-
-        .option-group label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: var(--text);
-        }
-
-        .option-group select {
-            width: 100%;
-            padding: 12px 16px;
-            font-family: inherit;
-            font-size: 1rem;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg);
-            color: var(--text);
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
-
-        .option-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            accent-color: var(--primary);
-        }
-
-        .checkbox-group label {
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 14px 24px;
+        .header-btn {
+            padding: 10px 20px;
             font-family: inherit;
             font-size: 1rem;
             font-weight: 600;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            box-shadow: 0 3px 0 var(--shadow);
         }
 
-        .btn-primary {
-            background: var(--primary);
+        .header-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 var(--shadow);
+        }
+
+        .btn-coral {
+            background: var(--coral);
             color: white;
         }
 
-        .btn-primary:hover {
-            background: #1d4ed8;
-            transform: translateY(-2px);
+        .btn-coral:hover {
+            background: var(--coral-light);
         }
 
-        .btn-secondary {
-            background: var(--border);
+        .btn-blue {
+            background: var(--blue);
+            color: white;
+        }
+
+        .btn-blue:hover {
+            background: var(--blue-dark);
+        }
+
+        .btn-green {
+            background: var(--green);
+            color: white;
+        }
+
+        .btn-green:hover {
+            background: var(--green-dark);
+        }
+
+        .btn-yellow {
+            background: var(--yellow);
             color: var(--text);
         }
 
-        .btn-secondary:hover {
-            background: #cbd5e1;
+        .btn-yellow:hover {
+            background: var(--yellow-dark);
+        }
+
+        /* Setup Screen */
+        .setup-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .setup-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 12px var(--shadow);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .setup-card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        /* Tabs */
+        .input-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 16px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: #e5e5e5;
+            color: var(--text-muted);
+        }
+
+        .tab-btn.active {
+            background: var(--blue);
+            color: white;
+            box-shadow: 0 3px 0 var(--blue-dark);
+        }
+
+        .input-method {
+            display: none;
+        }
+
+        .input-method.active {
+            display: block;
+        }
+
+        /* Simple inputs */
+        .simple-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 14px 16px;
+            font-family: 'Lexend', sans-serif;
+            font-size: 1.2rem;
+            border: 3px solid #e5e5e5;
+            border-radius: 10px;
+            transition: border-color 0.15s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--blue);
+        }
+
+        /* House input */
+        .house-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 0;
+        }
+
+        .house-visual {
+            position: relative;
+        }
+
+        .house-main {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .house-divisor-input {
+            width: 70px;
+            padding: 12px;
+            font-family: 'Lexend', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            text-align: center;
+            border: 3px solid #e5e5e5;
+            border-radius: 10px;
+            margin-right: 8px;
+            background: var(--yellow);
+            color: var(--text);
+        }
+
+        .house-divisor-input:focus {
+            outline: none;
+            border-color: var(--blue);
+        }
+
+        .house-bracket {
+            position: relative;
+            border-left: 4px solid var(--text);
+            border-top: 4px solid var(--text);
+            border-top-left-radius: 16px;
+            padding: 12px 16px 12px 12px;
+            background: white;
+        }
+
+        .house-dividend-input {
+            width: 180px;
+            padding: 12px;
+            font-family: 'Lexend', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            text-align: center;
+            border: 3px solid #e5e5e5;
+            border-radius: 10px;
+            background: var(--card);
+        }
+
+        .house-dividend-input:focus {
+            outline: none;
+            border-color: var(--blue);
+        }
+
+        .house-hint {
+            margin-top: 16px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Checkbox */
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 12px 16px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        .checkbox-row input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            accent-color: var(--blue);
+            cursor: pointer;
+        }
+
+        .checkbox-row label {
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .setup-btn {
+            width: 100%;
+            padding: 16px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-bottom: 12px;
+        }
+
+        .setup-btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn-start {
+            background: var(--green);
+            color: white;
+            box-shadow: 0 4px 0 var(--green-dark);
+        }
+
+        .btn-start:hover {
+            background: #3cb95e;
+        }
+
+        .btn-start:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 var(--green-dark);
+        }
+
+        .btn-random {
+            background: var(--blue);
+            color: white;
+            box-shadow: 0 4px 0 var(--blue-dark);
+        }
+
+        .btn-random:hover {
+            background: #5a9cf5;
+        }
+
+        .btn-random:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 var(--blue-dark);
+        }
+
+        .random-options {
+            display: none;
+            margin-top: 16px;
+            padding: 16px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        .random-options.show {
+            display: block;
+        }
+
+        .option-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .option-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .option-row select {
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
         }
 
         /* Problem Screen */
-        .problem-area {
+        .problem-screen {
             display: none;
-            background: var(--card);
-            border-radius: 20px;
-            padding: 32px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
         .problem-layout {
             display: grid;
-            grid-template-columns: 1fr 280px;
-            gap: 32px;
-            align-items: start;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             .problem-layout {
                 grid-template-columns: 1fr;
             }
         }
 
-        .division-display {
+        /* Main work area */
+        .work-panel {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        /* Concept banner */
+        .concept-banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f0f7ff;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .concept-banner .amount {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--blue);
+        }
+
+        .concept-banner .arrow {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .concept-banner .piles-text {
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        /* Division display */
+        .division-area {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            margin-bottom: 24px;
         }
 
         .long-division {
-            font-family: 'Space Mono', monospace;
-            font-size: 1.8rem;
+            font-size: 2rem;
+            font-weight: 600;
             position: relative;
-            display: inline-block;
         }
 
         .quotient-row {
             display: flex;
             justify-content: flex-end;
-            min-height: 2.2rem;
-            padding-right: 4px;
+            min-height: 2.5rem;
+            padding-right: 8px;
             margin-bottom: 4px;
         }
 
         .quotient-digit {
-            width: 1.4ch;
+            width: 1.2em;
             text-align: center;
-            font-weight: 700;
-            color: var(--primary);
+            color: var(--green);
         }
 
         .dividend-row {
             display: flex;
+            align-items: stretch;
+        }
+
+        .divisor-display {
+            display: flex;
             align-items: center;
-            border-bottom: 3px solid var(--text);
-            padding-bottom: 4px;
+            justify-content: center;
+            padding: 8px 12px;
+            margin-right: 4px;
+            background: var(--yellow);
+            border-radius: 8px;
+            font-weight: 700;
+            min-width: 50px;
         }
 
-        .divisor {
-            margin-right: 8px;
-            padding-right: 8px;
-            border-right: 3px solid var(--text);
-            font-weight: 600;
+        .bracket {
+            border-left: 4px solid var(--text);
+            border-top: 4px solid var(--text);
+            border-top-left-radius: 12px;
+            padding: 8px 12px 8px 8px;
         }
 
-        .dividend {
+        .dividend-digits {
             display: flex;
         }
 
         .digit {
-            width: 1.4ch;
+            width: 1.2em;
             text-align: center;
-            transition: all 0.3s;
+            padding: 4px 2px;
+            border-radius: 6px;
+            transition: all 0.2s;
         }
 
         .digit.highlight {
-            background: var(--highlight);
-            border-radius: 4px;
+            background: var(--yellow);
         }
 
         .digit.active {
-            background: var(--primary-light);
-            border-radius: 4px;
+            background: var(--blue);
+            color: white;
         }
 
-        .work-area {
+        /* Work rows */
+        .work-rows {
             margin-top: 8px;
-            min-height: 200px;
+            min-height: 150px;
         }
 
         .work-row {
             display: flex;
             justify-content: flex-end;
-            min-height: 2.2rem;
+            min-height: 2.5rem;
             align-items: center;
-            padding-right: 4px;
-            animation: fadeIn 0.3s ease;
+            padding-right: 8px;
+            animation: slideIn 0.3s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-8px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        .work-row.subtract {
-            color: var(--text-muted);
         }
 
         .work-row.subtract::before {
             content: '−';
             margin-right: 4px;
-        }
-
-        .work-row.line {
-            border-bottom: 2px solid var(--text);
-            margin: 2px 0;
-        }
-
-        .work-digit {
-            width: 1.4ch;
-            text-align: center;
-        }
-
-        .bring-down {
-            animation: bringDown 0.5s ease;
-            color: var(--warning);
-            font-weight: 600;
-        }
-
-        @keyframes bringDown {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* Multiplication Table */
-        .mult-table-container {
-            background: var(--bg);
-            border-radius: 16px;
-            padding: 20px;
-        }
-
-        .mult-table-container h3 {
-            font-size: 1rem;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            text-align: center;
-        }
-
-        .mult-table {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-        }
-
-        .mult-fact {
-            padding: 10px 12px;
-            background: var(--card);
-            border-radius: 8px;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.95rem;
-            text-align: center;
-            transition: all 0.2s;
-            border: 2px solid transparent;
-        }
-
-        .mult-fact.fits {
-            background: var(--success-light);
-            border-color: var(--success);
-        }
-
-        .mult-fact.too-big {
-            background: var(--error-light);
-            color: var(--text-muted);
-        }
-
-        .mult-fact.exact {
-            background: var(--success);
-            color: white;
+            color: var(--coral);
             font-weight: 700;
         }
 
-        /* Prompt Area */
-        .prompt-area {
-            margin-top: 24px;
+        .work-row.line {
+            border-bottom: 3px solid var(--text);
+            margin: 4px 0;
+            min-height: 0;
+            height: 3px;
+        }
+
+        .work-digit {
+            width: 1.2em;
             text-align: center;
         }
 
+        .work-digit.brought {
+            color: var(--coral);
+            animation: dropIn 0.4s ease;
+        }
+
+        @keyframes dropIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Prompt area */
+        .prompt-area {
+            text-align: center;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 12px;
+        }
+
         .prompt-text {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             margin-bottom: 16px;
-            color: var(--text);
             line-height: 1.5;
         }
 
         .prompt-text strong {
-            color: var(--primary);
+            color: var(--blue);
         }
 
         .input-row {
@@ -370,19 +572,43 @@
 
         .answer-input {
             width: 100px;
-            padding: 12px 16px;
-            font-family: 'Space Mono', monospace;
-            font-size: 1.4rem;
+            padding: 14px;
+            font-family: 'Lexend', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
             text-align: center;
-            border: 3px solid var(--border);
-            border-radius: 12px;
-            transition: all 0.2s;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            transition: all 0.15s;
         }
 
         .answer-input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px var(--primary-light);
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(66, 133, 244, 0.2);
+        }
+
+        .check-btn {
+            padding: 14px 28px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: var(--green);
+            color: white;
+            box-shadow: 0 3px 0 var(--green-dark);
+            transition: all 0.15s;
+        }
+
+        .check-btn:hover {
+            background: #3cb95e;
+        }
+
+        .check-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 var(--green-dark);
         }
 
         .yes-no-btns {
@@ -390,76 +616,196 @@
             gap: 12px;
         }
 
-        .yes-no-btns .btn {
-            min-width: 100px;
+        .yn-btn {
+            padding: 14px 32px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
         }
 
-        .btn-yes {
-            background: var(--success);
+        .yn-btn.yes {
+            background: var(--green);
             color: white;
+            box-shadow: 0 3px 0 var(--green-dark);
         }
 
-        .btn-yes:hover {
-            background: #15803d;
-        }
-
-        .btn-no {
-            background: var(--error);
+        .yn-btn.no {
+            background: var(--coral);
             color: white;
+            box-shadow: 0 3px 0 #c62828;
         }
 
-        .btn-no:hover {
-            background: #b91c1c;
+        .yn-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 var(--shadow);
         }
 
         /* Feedback */
         .feedback {
-            margin-top: 12px;
+            margin-top: 16px;
             padding: 12px 20px;
-            border-radius: 12px;
+            border-radius: 10px;
             font-weight: 500;
             display: none;
         }
 
         .feedback.show {
             display: block;
-            animation: shake 0.3s ease;
         }
 
         .feedback.error {
-            background: var(--error-light);
-            color: var(--error);
+            background: #ffebee;
+            color: var(--coral);
         }
 
         .feedback.success {
-            background: var(--success-light);
-            color: var(--success);
+            background: #e8f5e9;
+            color: var(--green);
         }
 
         .feedback.hint {
-            background: var(--warning-light);
-            color: #92400e;
+            background: #fff8e1;
+            color: #f57c00;
         }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+        /* Side panel */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Piles visualization */
+        .piles-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .piles-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .piles-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pile-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--blue);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 0 var(--blue-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pile-icon::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--green);
+            height: var(--fill, 0%);
+            transition: height 0.5s ease;
+        }
+
+        .pile-count {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .pile-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Mult table */
+        .mult-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .mult-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .mult-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
+        .mult-fact {
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .mult-fact.fits {
+            background: #e8f5e9;
+            border-color: var(--green);
+        }
+
+        .mult-fact.too-big {
+            background: #ffebee;
+            color: #999;
+        }
+
+        .mult-fact.exact {
+            background: var(--green);
+            color: white;
+            font-weight: 700;
         }
 
         /* Completion */
         .completion {
             display: none;
             text-align: center;
-            padding: 40px;
+            padding: 32px;
         }
 
         .completion.show {
             display: block;
-            animation: celebrate 0.5s ease;
+            animation: pop 0.4s ease;
         }
 
-        @keyframes celebrate {
+        @keyframes pop {
             0% { transform: scale(0.8); opacity: 0; }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); opacity: 1; }
@@ -467,80 +813,23 @@
 
         .completion h2 {
             font-size: 2rem;
-            color: var(--success);
-            margin-bottom: 16px;
+            color: var(--green);
+            margin-bottom: 12px;
         }
 
         .completion .result {
-            font-family: 'Space Mono', monospace;
             font-size: 1.8rem;
-            color: var(--text);
+            font-weight: 700;
             margin-bottom: 24px;
         }
 
-        .new-problem-btn {
-            background: var(--primary);
-            color: white;
-            padding: 16px 32px;
+        .completion .pile-summary {
             font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 24px;
         }
 
-        /* Custom problem modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--card);
-            padding: 32px;
-            border-radius: 20px;
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .modal-content h3 {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .modal-content .option-group {
-            margin-bottom: 16px;
-        }
-
-        .modal-content input {
-            width: 100%;
-            padding: 12px 16px;
-            font-family: 'Space Mono', monospace;
-            font-size: 1.1rem;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-        }
-
-        .modal-content input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .modal-btns {
-            display: flex;
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        /* Hide when not needed */
+        /* Utility */
         .hidden {
             display: none !important;
         }
@@ -548,53 +837,104 @@
 </head>
 <body>
     <div class="container">
-        <h1>Division Pal</h1>
-        <p class="subtitle">Step-by-step long division practice</p>
+        <!-- Header -->
+        <div class="header">
+            <h1>Long Division Copilot</h1>
+            <button class="header-btn btn-coral hidden" id="resetBtn">Reset</button>
+        </div>
 
         <!-- Setup Screen -->
-        <div class="setup-card" id="setupScreen">
-            <h2>Set Up Your Problem</h2>
-            
-            <div class="option-group">
-                <label for="divisorDigits">Divisor Digits</label>
-                <select id="divisorDigits">
-                    <option value="1" selected>1 digit (like 5)</option>
-                    <option value="2">2 digits (like 12)</option>
-                </select>
-            </div>
+        <div class="setup-screen" id="setupScreen">
+            <div class="setup-card">
+                <h2>Enter Your Problem</h2>
 
-            <div class="option-group">
-                <label for="dividendDigits">Dividend Digits</label>
-                <select id="dividendDigits">
-                    <option value="2">2 digits</option>
-                    <option value="3" selected>3 digits</option>
-                    <option value="4">4 digits</option>
-                    <option value="5">5 digits</option>
-                </select>
-            </div>
+                <div class="input-tabs">
+                    <button class="tab-btn active" data-tab="simple">Type Numbers</button>
+                    <button class="tab-btn" data-tab="house">Use the House</button>
+                </div>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="useRemainder">
-                <label for="useRemainder">Include problems with remainders</label>
-            </div>
+                <!-- Simple input -->
+                <div class="input-method active" id="simpleMethod">
+                    <div class="simple-inputs">
+                        <div class="input-group">
+                            <label>Big number (goes inside the house)</label>
+                            <input type="number" id="bigNumber" min="10" max="99999" placeholder="e.g. 985">
+                        </div>
+                        <div class="input-group">
+                            <label>Small number (goes outside)</label>
+                            <input type="number" id="smallNumber" min="2" max="99" placeholder="e.g. 5">
+                        </div>
+                    </div>
+                </div>
 
-            <div class="btn-row">
-                <button class="btn btn-secondary" id="enterProblemBtn">Enter Your Own</button>
-                <button class="btn btn-primary" id="generateBtn">Generate Problem</button>
+                <!-- House input -->
+                <div class="input-method" id="houseMethod">
+                    <div class="house-container">
+                        <div class="house-visual">
+                            <div class="house-main">
+                                <input type="number" class="house-divisor-input" id="houseDivisor" min="2" max="99" placeholder="÷">
+                                <div class="house-bracket">
+                                    <input type="number" class="house-dividend-input" id="houseDividend" min="10" max="99999" placeholder="big number">
+                                </div>
+                            </div>
+                        </div>
+                        <p class="house-hint">Small number outside, big number inside</p>
+                    </div>
+                </div>
+
+                <div class="checkbox-row">
+                    <input type="checkbox" id="useRemainder">
+                    <label for="useRemainder">My answer might have a remainder</label>
+                </div>
+
+                <button class="setup-btn btn-start" id="startBtn">Start</button>
+                <button class="setup-btn btn-random" id="randomBtn">Random Problem</button>
+
+                <div class="random-options" id="randomOptions">
+                    <div class="option-row">
+                        <label>Small number digits:</label>
+                        <select id="divisorDigits">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                        </select>
+                    </div>
+                    <div class="option-row">
+                        <label>Big number digits:</label>
+                        <select id="dividendDigits">
+                            <option value="2">2</option>
+                            <option value="3" selected>3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Problem Screen -->
-        <div class="problem-area" id="problemScreen">
+        <div class="problem-screen" id="problemScreen">
             <div class="problem-layout">
-                <div class="division-display">
-                    <div class="long-division">
-                        <div class="quotient-row" id="quotientRow"></div>
-                        <div class="dividend-row">
-                            <span class="divisor" id="divisorDisplay"></span>
-                            <div class="dividend" id="dividendDisplay"></div>
+                <!-- Main work area -->
+                <div class="work-panel">
+                    <div class="concept-banner" id="conceptBanner">
+                        <span class="amount" id="conceptAmount">985 things</span>
+                        <span class="arrow">→</span>
+                        <span class="piles-text">splitting into <strong id="conceptPiles">5</strong> equal piles</span>
+                        <span class="arrow">→</span>
+                        <span class="piles-text"><strong id="conceptResult">?</strong> in each pile</span>
+                    </div>
+
+                    <div class="division-area">
+                        <div class="long-division">
+                            <div class="quotient-row" id="quotientRow"></div>
+                            <div class="dividend-row">
+                                <div class="divisor-display" id="divisorDisplay"></div>
+                                <div class="bracket">
+                                    <div class="dividend-digits" id="dividendDisplay"></div>
+                                </div>
+                            </div>
+                            <div class="work-rows" id="workRows"></div>
                         </div>
-                        <div class="work-area" id="workArea"></div>
                     </div>
 
                     <div class="prompt-area" id="promptArea">
@@ -606,32 +946,22 @@
                     <div class="completion" id="completion">
                         <h2>Great Job!</h2>
                         <p class="result" id="resultText"></p>
-                        <button class="btn new-problem-btn" id="newProblemBtn">New Problem</button>
+                        <p class="pile-summary" id="pileSummary"></p>
+                        <button class="header-btn btn-green" id="newProblemBtn">New Problem</button>
                     </div>
                 </div>
 
-                <div class="mult-table-container" id="multTableContainer">
-                    <h3 id="multTableTitle">Multiplication Facts</h3>
-                    <div class="mult-table" id="multTable"></div>
-                </div>
-            </div>
-        </div>
+                <!-- Side panel -->
+                <div class="side-panel" id="sidePanel">
+                    <div class="piles-card">
+                        <div class="piles-title">Each pile has:</div>
+                        <div class="piles-container" id="pilesContainer"></div>
+                    </div>
 
-        <!-- Custom Problem Modal -->
-        <div class="modal" id="customModal">
-            <div class="modal-content">
-                <h3>Enter Your Problem</h3>
-                <div class="option-group">
-                    <label for="customDivisor">Divisor (1-2 digits)</label>
-                    <input type="number" id="customDivisor" min="2" max="99" placeholder="e.g., 5">
-                </div>
-                <div class="option-group">
-                    <label for="customDividend">Dividend (2-5 digits)</label>
-                    <input type="number" id="customDividend" min="10" max="99999" placeholder="e.g., 985">
-                </div>
-                <div class="modal-btns">
-                    <button class="btn btn-secondary" id="cancelModal">Cancel</button>
-                    <button class="btn btn-primary" id="startCustom">Start</button>
+                    <div class="mult-card">
+                        <div class="mult-title" id="multTitle">Multiplication Facts</div>
+                        <div class="mult-grid" id="multGrid"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -647,82 +977,107 @@
         let currentNumber = 0;
         let workRows = [];
         let attempts = 0;
-        let step = 'check-fit'; // check-fit, estimate, multiply, subtract, bring-down
+        let step = 'check-fit';
         let currentQuotientDigit = 0;
+        let runningQuotient = 0;
 
-        // DOM Elements
+        // DOM
         const setupScreen = document.getElementById('setupScreen');
         const problemScreen = document.getElementById('problemScreen');
-        const divisorDisplay = document.getElementById('divisorDisplay');
-        const dividendDisplay = document.getElementById('dividendDisplay');
-        const quotientRow = document.getElementById('quotientRow');
-        const workArea = document.getElementById('workArea');
-        const promptArea = document.getElementById('promptArea');
-        const promptText = document.getElementById('promptText');
-        const inputRow = document.getElementById('inputRow');
-        const feedback = document.getElementById('feedback');
-        const completion = document.getElementById('completion');
-        const resultText = document.getElementById('resultText');
-        const multTableContainer = document.getElementById('multTableContainer');
-        const multTable = document.getElementById('multTable');
-        const multTableTitle = document.getElementById('multTableTitle');
-        const customModal = document.getElementById('customModal');
+        const resetBtn = document.getElementById('resetBtn');
+        const conceptBanner = document.getElementById('conceptBanner');
 
-        // Event Listeners
-        document.getElementById('generateBtn').addEventListener('click', generateProblem);
-        document.getElementById('enterProblemBtn').addEventListener('click', () => customModal.classList.add('show'));
-        document.getElementById('cancelModal').addEventListener('click', () => customModal.classList.remove('show'));
-        document.getElementById('startCustom').addEventListener('click', startCustomProblem);
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.input-method').forEach(m => m.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab + 'Method').classList.add('active');
+            });
+        });
+
+        // Sync inputs
+        const syncInputs = (src, dest) => {
+            document.getElementById(src).addEventListener('input', e => {
+                document.getElementById(dest).value = e.target.value;
+            });
+        };
+        syncInputs('bigNumber', 'houseDividend');
+        syncInputs('smallNumber', 'houseDivisor');
+        syncInputs('houseDividend', 'bigNumber');
+        syncInputs('houseDivisor', 'smallNumber');
+
+        // Enter key handling
+        ['bigNumber', 'smallNumber', 'houseDividend', 'houseDivisor'].forEach(id => {
+            document.getElementById(id).addEventListener('keypress', e => {
+                if (e.key === 'Enter') startFromInput();
+            });
+        });
+
+        // Buttons
+        document.getElementById('startBtn').addEventListener('click', startFromInput);
+        document.getElementById('randomBtn').addEventListener('click', handleRandomClick);
         document.getElementById('newProblemBtn').addEventListener('click', resetToSetup);
+        resetBtn.addEventListener('click', resetToSetup);
+
+        let randomClickCount = 0;
+        function handleRandomClick() {
+            const opts = document.getElementById('randomOptions');
+            if (!opts.classList.contains('show')) {
+                opts.classList.add('show');
+            } else {
+                generateProblem();
+            }
+        }
+
+        function startFromInput() {
+            const big = parseInt(document.getElementById('bigNumber').value || document.getElementById('houseDividend').value);
+            const small = parseInt(document.getElementById('smallNumber').value || document.getElementById('houseDivisor').value);
+
+            if (!small || small < 2 || small > 99) {
+                alert('Enter a small number between 2 and 99');
+                return;
+            }
+            if (!big || big < 10 || big > 99999) {
+                alert('Enter a big number between 10 and 99999');
+                return;
+            }
+            if (big < small) {
+                alert('The big number should be larger than the small number');
+                return;
+            }
+
+            divisor = small;
+            dividend = big;
+            startProblem();
+        }
 
         function generateProblem() {
             const divisorDigitCount = parseInt(document.getElementById('divisorDigits').value);
             const dividendDigitCount = parseInt(document.getElementById('dividendDigits').value);
             const useRemainder = document.getElementById('useRemainder').checked;
 
-            // Generate divisor
             const divisorMin = divisorDigitCount === 1 ? 2 : 10;
             const divisorMax = divisorDigitCount === 1 ? 9 : 99;
             divisor = Math.floor(Math.random() * (divisorMax - divisorMin + 1)) + divisorMin;
 
-            // Generate dividend
             const dividendMin = Math.pow(10, dividendDigitCount - 1);
             const dividendMax = Math.pow(10, dividendDigitCount) - 1;
-            
+
             if (useRemainder) {
                 dividend = Math.floor(Math.random() * (dividendMax - dividendMin + 1)) + dividendMin;
             } else {
-                // Generate a dividend that divides evenly
-                const minQuotient = Math.ceil(dividendMin / divisor);
-                const maxQuotient = Math.floor(dividendMax / divisor);
-                const quotient = Math.floor(Math.random() * (maxQuotient - minQuotient + 1)) + minQuotient;
-                dividend = quotient * divisor;
+                const minQ = Math.ceil(dividendMin / divisor);
+                const maxQ = Math.floor(dividendMax / divisor);
+                const q = Math.floor(Math.random() * (maxQ - minQ + 1)) + minQ;
+                dividend = q * divisor;
             }
 
-            startProblem();
-        }
-
-        function startCustomProblem() {
-            const customDivisor = parseInt(document.getElementById('customDivisor').value);
-            const customDividend = parseInt(document.getElementById('customDividend').value);
-
-            if (!customDivisor || customDivisor < 2 || customDivisor > 99) {
-                alert('Please enter a divisor between 2 and 99');
-                return;
-            }
-            if (!customDividend || customDividend < 10 || customDividend > 99999) {
-                alert('Please enter a dividend between 10 and 99999');
-                return;
-            }
-
-            divisor = customDivisor;
-            dividend = customDividend;
-            customModal.classList.remove('show');
             startProblem();
         }
 
         function startProblem() {
-            // Reset state
             dividendDigits = dividend.toString().split('').map(Number);
             quotientDigits = new Array(dividendDigits.length).fill(null);
             currentPosition = 0;
@@ -730,73 +1085,115 @@
             workRows = [];
             attempts = 0;
             step = 'check-fit';
+            runningQuotient = 0;
 
-            // Switch screens
             setupScreen.style.display = 'none';
             problemScreen.style.display = 'block';
-            completion.classList.remove('show');
-            promptArea.style.display = 'block';
+            resetBtn.classList.remove('hidden');
+            document.getElementById('completion').classList.remove('show');
+            document.getElementById('promptArea').style.display = 'block';
+            document.getElementById('sidePanel').classList.remove('hidden');
 
-            // Render initial display
+            // Update concept banner
+            document.getElementById('conceptAmount').textContent = dividend + ' things';
+            document.getElementById('conceptPiles').textContent = divisor;
+            document.getElementById('conceptResult').textContent = '?';
+
             renderDivision();
+            renderPiles();
             updateMultTable();
             nextStep();
         }
 
         function renderDivision() {
-            // Divisor
-            divisorDisplay.textContent = divisor;
+            document.getElementById('divisorDisplay').textContent = divisor;
 
-            // Dividend with highlighting
-            dividendDisplay.innerHTML = '';
-            dividendDigits.forEach((digit, index) => {
+            const dividendEl = document.getElementById('dividendDisplay');
+            dividendEl.innerHTML = '';
+            dividendDigits.forEach((d, i) => {
                 const span = document.createElement('span');
                 span.className = 'digit';
-                span.textContent = digit;
-                if (index <= currentPosition) {
-                    span.classList.add(index === currentPosition ? 'active' : 'highlight');
+                span.textContent = d;
+                if (i <= currentPosition) {
+                    span.classList.add(i === currentPosition ? 'active' : 'highlight');
                 }
-                dividendDisplay.appendChild(span);
+                dividendEl.appendChild(span);
             });
 
-            // Quotient row
-            quotientRow.innerHTML = '';
-            quotientDigits.forEach((digit, index) => {
+            const quotientEl = document.getElementById('quotientRow');
+            quotientEl.innerHTML = '';
+            quotientDigits.forEach(d => {
                 const span = document.createElement('span');
                 span.className = 'quotient-digit';
-                span.textContent = digit !== null ? digit : '';
-                quotientRow.appendChild(span);
+                span.textContent = d !== null ? d : '';
+                quotientEl.appendChild(span);
             });
 
-            // Work area
-            workArea.innerHTML = '';
+            const workEl = document.getElementById('workRows');
+            workEl.innerHTML = '';
             workRows.forEach(row => {
                 const div = document.createElement('div');
                 div.className = 'work-row';
                 if (row.type === 'subtract') div.classList.add('subtract');
-                if (row.type === 'line') div.classList.add('line');
+                if (row.type === 'line') {
+                    div.classList.add('line');
+                    workEl.appendChild(div);
+                    return;
+                }
+
+                const digits = row.value.toString().split('');
+                const padding = dividendDigits.length - row.position - digits.length + 1;
                 
-                // Right-align the digits based on position
-                const padding = dividendDigits.length - row.position - row.value.toString().length + 1;
-                div.innerHTML = '&nbsp;'.repeat(Math.max(0, padding) * 2);
-                
-                row.value.toString().split('').forEach((d, i) => {
+                for (let i = 0; i < padding; i++) {
+                    const spacer = document.createElement('span');
+                    spacer.className = 'work-digit';
+                    spacer.innerHTML = '&nbsp;';
+                    div.appendChild(spacer);
+                }
+
+                digits.forEach((d, i) => {
                     const span = document.createElement('span');
                     span.className = 'work-digit';
-                    if (row.bringDown && i === row.value.toString().length - 1) {
-                        span.classList.add('bring-down');
+                    if (row.bringDown && i === digits.length - 1) {
+                        span.classList.add('brought');
                     }
                     span.textContent = d;
                     div.appendChild(span);
                 });
-                
-                workArea.appendChild(div);
+
+                workEl.appendChild(div);
             });
         }
 
-        function updateMultTable(targetNumber = null) {
-            multTableTitle.textContent = `${divisor} × Table`;
-            multTable.innerHTML = '';
+        function renderPiles() {
+            const container = document.getElementById('pilesContainer');
+            container.innerHTML = '';
+
+            const maxQuotient = Math.floor(dividend / divisor);
+            
+            for (let i = 0; i < divisor; i++) {
+                const pile = document.createElement('div');
+                pile.className = 'pile';
+
+                const icon = document.createElement('div');
+                icon.className = 'pile-icon';
+                const fillPercent = maxQuotient > 0 ? (runningQuotient / maxQuotient) * 100 : 0;
+                icon.style.setProperty('--fill', fillPercent + '%');
+
+                const count = document.createElement('div');
+                count.className = 'pile-count';
+                count.textContent = runningQuotient;
+
+                pile.appendChild(icon);
+                pile.appendChild(count);
+                container.appendChild(pile);
+            }
+        }
+
+        function updateMultTable(target = null) {
+            document.getElementById('multTitle').textContent = divisor + ' × Table';
+            const grid = document.getElementById('multGrid');
+            grid.innerHTML = '';
 
             for (let i = 1; i <= 10; i++) {
                 const product = divisor * i;
@@ -804,79 +1201,60 @@
                 div.className = 'mult-fact';
                 div.textContent = `${divisor} × ${i} = ${product}`;
 
-                if (targetNumber !== null) {
-                    if (product === targetNumber) {
-                        div.classList.add('exact');
-                    } else if (product <= targetNumber) {
-                        div.classList.add('fits');
-                    } else {
-                        div.classList.add('too-big');
-                    }
+                if (target !== null) {
+                    if (product === target) div.classList.add('exact');
+                    else if (product <= target) div.classList.add('fits');
+                    else div.classList.add('too-big');
                 }
 
-                multTable.appendChild(div);
+                grid.appendChild(div);
             }
         }
 
         function nextStep() {
-            feedback.classList.remove('show');
+            document.getElementById('feedback').classList.remove('show');
             attempts = 0;
 
-            // Calculate current number we're working with
             if (currentPosition === 0) {
                 currentNumber = dividendDigits[0];
             }
 
             switch (step) {
-                case 'check-fit':
-                    showCheckFit();
-                    break;
-                case 'estimate':
-                    showEstimate();
-                    break;
-                case 'multiply':
-                    showMultiply();
-                    break;
-                case 'subtract':
-                    showSubtract();
-                    break;
-                case 'bring-down':
-                    doBringDown();
-                    break;
+                case 'check-fit': showCheckFit(); break;
+                case 'estimate': showEstimate(); break;
+                case 'multiply': showMultiply(); break;
+                case 'subtract': showSubtract(); break;
+                case 'bring-down': doBringDown(); break;
             }
         }
 
         function showCheckFit() {
-            const digitWord = currentPosition === 0 ? 'first digit' : 'number';
-            promptText.innerHTML = `Can the divisor (<strong>${divisor}</strong>) go into ${currentNumber}?`;
+            document.getElementById('promptText').innerHTML = 
+                `Can <strong>${divisor}</strong> go into <strong>${currentNumber}</strong>?`;
             updateMultTable(currentNumber);
-            
-            inputRow.innerHTML = `
+
+            document.getElementById('inputRow').innerHTML = `
                 <div class="yes-no-btns">
-                    <button class="btn btn-yes" onclick="handleCheckFit(true)">Yes</button>
-                    <button class="btn btn-no" onclick="handleCheckFit(false)">No</button>
+                    <button class="yn-btn yes" onclick="handleCheckFit(true)">Yes</button>
+                    <button class="yn-btn no" onclick="handleCheckFit(false)">No</button>
                 </div>
             `;
         }
 
         function handleCheckFit(answer) {
             const canFit = currentNumber >= divisor;
-            
+
             if (answer === canFit) {
                 if (canFit) {
                     step = 'estimate';
                     nextStep();
                 } else {
-                    // Can't fit, put 0 or bring down
                     if (currentPosition === 0) {
-                        // First digit doesn't fit, expand to include second digit
                         currentPosition++;
                         currentNumber = currentNumber * 10 + dividendDigits[currentPosition];
                         renderDivision();
-                        step = 'check-fit';
                         nextStep();
                     } else {
-                        // Put a 0 in quotient and bring down
                         quotientDigits[currentPosition] = 0;
                         renderDivision();
                         step = 'bring-down';
@@ -884,58 +1262,56 @@
                     }
                 }
             } else {
-                showFeedback('error', canFit ? 
-                    `Look at the table. ${divisor} can fit into ${currentNumber}.` :
-                    `${divisor} is bigger than ${currentNumber}, so it can't go in.`
+                showFeedback('error', canFit ?
+                    `Look at the table — ${divisor} can fit into ${currentNumber}!` :
+                    `${divisor} is bigger than ${currentNumber}, so it won't fit.`
                 );
             }
         }
 
         function showEstimate() {
-            promptText.innerHTML = `How many times can <strong>${divisor}</strong> go into <strong>${currentNumber}</strong>?<br><span style="color: var(--text-muted); font-size: 0.95rem;">Use the multiplication table to find the largest product that fits.</span>`;
+            document.getElementById('promptText').innerHTML = 
+                `How many times can <strong>${divisor}</strong> go into <strong>${currentNumber}</strong>?<br>
+                <span style="color:var(--text-muted);font-size:0.95rem;">Find the largest product that fits.</span>`;
             updateMultTable(currentNumber);
-            
-            inputRow.innerHTML = `
+
+            document.getElementById('inputRow').innerHTML = `
                 <input type="number" class="answer-input" id="answerInput" min="0" max="10" autofocus>
-                <button class="btn btn-primary" onclick="handleEstimate()">Check</button>
+                <button class="check-btn" onclick="handleEstimate()">Check</button>
             `;
-            
-            document.getElementById('answerInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleEstimate();
-            });
-            document.getElementById('answerInput').focus();
+
+            const input = document.getElementById('answerInput');
+            input.addEventListener('keypress', e => { if (e.key === 'Enter') handleEstimate(); });
+            input.focus();
         }
 
         function handleEstimate() {
             const input = document.getElementById('answerInput');
             const answer = parseInt(input.value);
-            const correctAnswer = Math.floor(currentNumber / divisor);
+            const correct = Math.floor(currentNumber / divisor);
 
-            if (answer === correctAnswer) {
+            if (answer === correct) {
                 currentQuotientDigit = answer;
                 quotientDigits[currentPosition] = answer;
+                
+                // Update running quotient
+                runningQuotient = parseInt(quotientDigits.filter(d => d !== null).join('') || '0');
+                
                 renderDivision();
+                renderPiles();
+                document.getElementById('conceptResult').textContent = runningQuotient;
+                
                 showFeedback('success', 'Correct!');
-                setTimeout(() => {
-                    step = 'multiply';
-                    nextStep();
-                }, 800);
+                setTimeout(() => { step = 'multiply'; nextStep(); }, 700);
             } else {
                 attempts++;
-                if (answer > correctAnswer) {
-                    const product = answer * divisor;
-                    showFeedback('error', `${divisor} × ${answer} = ${product}, which is bigger than ${currentNumber}. Try a smaller number.`);
-                } else if (answer < correctAnswer && answer >= 0) {
-                    const product = answer * divisor;
-                    const nextProduct = (answer + 1) * divisor;
-                    if (nextProduct <= currentNumber) {
-                        showFeedback('hint', `${divisor} × ${answer} = ${product} works, but you can fit more! Look for a bigger number.`);
-                    } else {
-                        // This shouldn't happen if their answer is less than correct
-                        showFeedback('error', `Try again. Look at the table for the largest product that fits under ${currentNumber}.`);
-                    }
+                const product = answer * divisor;
+                if (answer > correct) {
+                    showFeedback('error', `${divisor} × ${answer} = ${product}, which is bigger than ${currentNumber}. Try smaller.`);
+                } else if (answer >= 0 && answer < correct) {
+                    showFeedback('hint', `${divisor} × ${answer} = ${product} fits, but can you fit more?`);
                 } else {
-                    showFeedback('error', 'Enter a number between 0 and 10.');
+                    showFeedback('error', 'Enter a number from the table.');
                 }
                 input.value = '';
                 input.focus();
@@ -943,43 +1319,35 @@
         }
 
         function showMultiply() {
-            promptText.innerHTML = `What is <strong>${divisor} × ${currentQuotientDigit}</strong>?`;
-            
-            inputRow.innerHTML = `
+            document.getElementById('promptText').innerHTML = 
+                `What is <strong>${divisor} × ${currentQuotientDigit}</strong>?`;
+
+            document.getElementById('inputRow').innerHTML = `
                 <input type="number" class="answer-input" id="answerInput" autofocus>
-                <button class="btn btn-primary" onclick="handleMultiply()">Check</button>
+                <button class="check-btn" onclick="handleMultiply()">Check</button>
             `;
-            
-            document.getElementById('answerInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleMultiply();
-            });
-            document.getElementById('answerInput').focus();
+
+            const input = document.getElementById('answerInput');
+            input.addEventListener('keypress', e => { if (e.key === 'Enter') handleMultiply(); });
+            input.focus();
         }
 
         function handleMultiply() {
             const input = document.getElementById('answerInput');
             const answer = parseInt(input.value);
-            const correctAnswer = divisor * currentQuotientDigit;
+            const correct = divisor * currentQuotientDigit;
 
-            if (answer === correctAnswer) {
-                // Add the product to work area
-                workRows.push({
-                    type: 'subtract',
-                    value: correctAnswer,
-                    position: currentPosition
-                });
+            if (answer === correct) {
+                workRows.push({ type: 'subtract', value: correct, position: currentPosition });
                 renderDivision();
                 showFeedback('success', 'Correct!');
-                setTimeout(() => {
-                    step = 'subtract';
-                    nextStep();
-                }, 800);
+                setTimeout(() => { step = 'subtract'; nextStep(); }, 700);
             } else {
                 attempts++;
                 if (attempts >= 2) {
-                    showFeedback('hint', `Look at the table: ${divisor} × ${currentQuotientDigit} = ${correctAnswer}`);
+                    showFeedback('hint', `Check the table: ${divisor} × ${currentQuotientDigit} = ${correct}`);
                 } else {
-                    showFeedback('error', 'Not quite. Check the multiplication table.');
+                    showFeedback('error', 'Not quite — check the multiplication table.');
                 }
                 input.value = '';
                 input.focus();
@@ -988,57 +1356,43 @@
 
         function showSubtract() {
             const product = divisor * currentQuotientDigit;
-            promptText.innerHTML = `What is <strong>${currentNumber} − ${product}</strong>?`;
-            
-            inputRow.innerHTML = `
+            document.getElementById('promptText').innerHTML = 
+                `What is <strong>${currentNumber} − ${product}</strong>?`;
+
+            document.getElementById('inputRow').innerHTML = `
                 <input type="number" class="answer-input" id="answerInput" autofocus>
-                <button class="btn btn-primary" onclick="handleSubtract()">Check</button>
+                <button class="check-btn" onclick="handleSubtract()">Check</button>
             `;
-            
-            document.getElementById('answerInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleSubtract();
-            });
-            document.getElementById('answerInput').focus();
+
+            const input = document.getElementById('answerInput');
+            input.addEventListener('keypress', e => { if (e.key === 'Enter') handleSubtract(); });
+            input.focus();
         }
 
         function handleSubtract() {
             const input = document.getElementById('answerInput');
             const answer = parseInt(input.value);
             const product = divisor * currentQuotientDigit;
-            const correctAnswer = currentNumber - product;
+            const correct = currentNumber - product;
 
-            if (answer === correctAnswer) {
-                // Add line and difference to work area
-                workRows.push({
-                    type: 'line',
-                    value: '',
-                    position: currentPosition
-                });
-                workRows.push({
-                    type: 'result',
-                    value: correctAnswer,
-                    position: currentPosition,
-                    bringDown: false
-                });
-                currentNumber = correctAnswer;
+            if (answer === correct) {
+                workRows.push({ type: 'line', value: '', position: currentPosition });
+                workRows.push({ type: 'result', value: correct, position: currentPosition, bringDown: false });
+                currentNumber = correct;
                 renderDivision();
-                
-                // Check if we're done
+
                 if (currentPosition >= dividendDigits.length - 1) {
                     showCompletion();
                 } else {
                     showFeedback('success', 'Correct!');
-                    setTimeout(() => {
-                        step = 'bring-down';
-                        nextStep();
-                    }, 800);
+                    setTimeout(() => { step = 'bring-down'; nextStep(); }, 700);
                 }
             } else {
                 attempts++;
                 if (attempts >= 2) {
-                    showFeedback('hint', `${currentNumber} − ${product} = ${correctAnswer}`);
+                    showFeedback('hint', `${currentNumber} − ${product} = ${correct}`);
                 } else {
-                    showFeedback('error', 'Not quite. Try again.');
+                    showFeedback('error', 'Not quite — try again.');
                 }
                 input.value = '';
                 input.focus();
@@ -1047,28 +1401,23 @@
 
         function doBringDown() {
             currentPosition++;
-            const broughtDigit = dividendDigits[currentPosition];
-            
-            // Update work area to show bring down
+            const brought = dividendDigits[currentPosition];
+
             if (workRows.length > 0) {
-                const lastRow = workRows[workRows.length - 1];
-                const newValue = parseInt(lastRow.value.toString() + broughtDigit.toString());
-                workRows[workRows.length - 1] = {
-                    ...lastRow,
-                    value: newValue,
-                    position: currentPosition,
-                    bringDown: true
-                };
-                currentNumber = newValue;
+                const last = workRows[workRows.length - 1];
+                const newVal = parseInt(last.value.toString() + brought.toString());
+                workRows[workRows.length - 1] = { ...last, value: newVal, position: currentPosition, bringDown: true };
+                currentNumber = newVal;
             } else {
-                currentNumber = currentNumber * 10 + broughtDigit;
+                currentNumber = currentNumber * 10 + brought;
             }
 
             renderDivision();
-            
-            // Show explanation
-            promptText.innerHTML = `Bring down the <strong>${broughtDigit}</strong> to make <strong>${currentNumber}</strong>.`;
-            inputRow.innerHTML = `<button class="btn btn-primary" onclick="continueToBringDown()">Continue</button>`;
+
+            document.getElementById('promptText').innerHTML = 
+                `Bring down the <strong>${brought}</strong> to make <strong>${currentNumber}</strong>.`;
+            document.getElementById('inputRow').innerHTML = 
+                `<button class="check-btn" onclick="continueToBringDown()">Continue</button>`;
         }
 
         function continueToBringDown() {
@@ -1076,34 +1425,38 @@
             nextStep();
         }
 
-        function showFeedback(type, message) {
-            feedback.className = 'feedback ' + type + ' show';
-            feedback.textContent = message;
+        function showFeedback(type, msg) {
+            const fb = document.getElementById('feedback');
+            fb.className = 'feedback ' + type + ' show';
+            fb.textContent = msg;
         }
 
         function showCompletion() {
-            promptArea.style.display = 'none';
-            multTableContainer.classList.add('hidden');
-            
+            document.getElementById('promptArea').style.display = 'none';
+            document.getElementById('sidePanel').classList.add('hidden');
+
             const quotient = Math.floor(dividend / divisor);
             const remainder = dividend % divisor;
-            
-            let resultStr = `${dividend} ÷ ${divisor} = ${quotient}`;
-            if (remainder > 0) {
-                resultStr += ` R${remainder}`;
-            }
-            
-            resultText.textContent = resultStr;
-            completion.classList.add('show');
+
+            let result = `${dividend} ÷ ${divisor} = ${quotient}`;
+            if (remainder > 0) result += ` R${remainder}`;
+
+            document.getElementById('resultText').textContent = result;
+            document.getElementById('pileSummary').textContent = 
+                `You put ${quotient} in each of your ${divisor} piles` + 
+                (remainder > 0 ? ` with ${remainder} left over!` : '!');
+
+            document.getElementById('completion').classList.add('show');
         }
 
         function resetToSetup() {
             setupScreen.style.display = 'block';
             problemScreen.style.display = 'none';
-            completion.classList.remove('show');
-            multTableContainer.classList.remove('hidden');
-            document.getElementById('customDivisor').value = '';
-            document.getElementById('customDividend').value = '';
+            resetBtn.classList.add('hidden');
+            document.getElementById('randomOptions').classList.remove('show');
+            ['bigNumber', 'smallNumber', 'houseDividend', 'houseDivisor'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
         }
     </script>
 </body>
