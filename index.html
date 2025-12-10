@@ -781,6 +781,36 @@
             justify-content: center;
         }
 
+        /* Compact mode for 13-24 piles */
+        .victory-piles.compact .victory-pile-box {
+            width: 40px;
+            height: 60px;
+        }
+        .victory-piles.compact .victory-pile-count {
+            font-size: 1rem;
+        }
+        .victory-piles.compact .victory-pile-label {
+            font-size: 0.75rem;
+        }
+
+        /* Tiny mode for 25+ piles */
+        .victory-piles.tiny {
+            gap: 8px; 
+        }
+        .victory-piles.tiny .victory-pile-box {
+            width: 30px;
+            height: 45px;
+            border-radius: 6px;
+        }
+        .victory-piles.tiny .victory-pile-count {
+            font-size: 0.8rem;
+            padding-bottom: 4px;
+        }
+        .victory-piles.tiny .victory-pile-label {
+            font-size: 0.65rem;
+            display: none; /* Hide labels when scaling down significantly to reduce clutter */
+        }
+
         .victory-pile-fill {
             position: absolute;
             bottom: 0;
@@ -1610,10 +1640,18 @@
             const victoryContainer = document.getElementById('victoryPiles');
             victoryContainer.innerHTML = '';
             
-            // Limit piles if divisor is huge
-            const pilesToShow = Math.min(divisor, 12);
+            // Remove previous scaling classes
+            victoryContainer.classList.remove('compact', 'tiny');
+
+            // Determine scaling based on pile count (divisor)
+            if (divisor > 30) {
+                victoryContainer.classList.add('tiny');
+            } else if (divisor > 12) {
+                victoryContainer.classList.add('compact');
+            }
             
-            for (let i = 0; i < pilesToShow; i++) {
+            // Loop through ALL piles (divisor), no arbitrary limit of 12
+            for (let i = 0; i < divisor; i++) {
                 const pile = document.createElement('div');
                 pile.className = 'victory-pile';
                 pile.innerHTML = `
@@ -1625,19 +1663,12 @@
                 `;
                 victoryContainer.appendChild(pile);
             }
-            
-            if (divisor > 12) {
-                const more = document.createElement('div');
-                more.style.alignSelf = 'center';
-                more.innerHTML = `... and ${divisor - 12} more piles`;
-                victoryContainer.appendChild(more);
-            }
 
             document.getElementById('completion').classList.add('show');
 
             // Animate the piles filling up
             setTimeout(() => {
-                for (let i = 0; i < pilesToShow; i++) {
+                for (let i = 0; i < divisor; i++) {
                     const fill = document.getElementById(`pileFill${i}`);
                     if (fill) {
                         fill.style.height = '100%';
