@@ -682,127 +682,29 @@
             gap: 20px;
         }
 
-        /* Piles visualization */
-        .piles-card {
+        /* Table card */
+        .table-card {
             background: var(--card);
             border-radius: 16px;
             padding: 20px;
             box-shadow: 0 4px 12px var(--shadow);
-        }
-
-        .piles-title {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 16px;
             text-align: center;
-            color: var(--text-muted);
-        }
-
-        .piles-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .pile {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .pile-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--blue);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 3px 0 var(--blue-dark);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .pile-icon::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--green);
-            height: var(--fill, 0%);
-            transition: height 0.5s ease;
-        }
-
-        .pile-count {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        .pile-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        /* Mult table */
-        .mult-card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 12px var(--shadow);
             transition: all 0.3s;
         }
-        
-        .mult-card.pulse {
+
+        .table-card.pulse {
             box-shadow: 0 0 0 4px var(--blue), 0 4px 12px var(--shadow);
             transform: scale(1.02);
         }
 
-        .mult-title {
+        .table-card-title {
             font-size: 1rem;
             font-weight: 600;
             margin-bottom: 12px;
-            text-align: center;
             color: var(--text-muted);
         }
 
-        .mult-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-        }
-
-        .mult-fact {
-            padding: 10px;
-            background: #f5f5f5;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: all 0.2s;
-            border: 2px solid transparent;
-        }
-
-        .mult-fact.fits {
-            background: #e8f5e9;
-            border-color: var(--green);
-        }
-
-        .mult-fact.too-big {
-            background: #ffebee;
-            color: #999;
-        }
-
-        .mult-fact.exact {
-            background: var(--green);
-            color: white;
-            font-weight: 700;
-        }
-
-        /* Completion */
+        /* Completion / Victory */
         .completion {
             display: none;
             text-align: center;
@@ -823,7 +725,7 @@
         .completion h2 {
             font-size: 2rem;
             color: var(--green);
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .completion .result {
@@ -836,6 +738,91 @@
             font-size: 1.1rem;
             color: var(--text-muted);
             margin-bottom: 24px;
+        }
+
+        /* Victory piles animation */
+        .victory-piles {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin: 24px 0;
+            min-height: 120px;
+        }
+
+        .victory-pile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .victory-pile-box {
+            width: 60px;
+            height: 80px;
+            background: var(--blue);
+            border-radius: 10px;
+            box-shadow: 0 4px 0 var(--blue-dark);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .victory-pile-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--green);
+            height: 0;
+            transition: height 1s ease-out;
+        }
+
+        .victory-pile-count {
+            position: relative;
+            z-index: 1;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2rem;
+            padding-bottom: 8px;
+        }
+
+        .victory-pile-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Falling blocks animation */
+        .falling-blocks {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .falling-block {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--yellow);
+            border-radius: 2px;
+            animation: fall 1.5s ease-in forwards;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-20px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100px);
+                opacity: 0;
+            }
         }
 
         /* Utility */
@@ -1054,23 +1041,18 @@
                     </div>
 
                     <div class="completion" id="completion">
-                        <h2>Great Job!</h2>
+                        <h2>🎉 Great Job!</h2>
                         <p class="result" id="resultText"></p>
                         <p class="pile-summary" id="pileSummary"></p>
+                        <div class="victory-piles" id="victoryPiles"></div>
                         <button class="header-btn btn-green" id="newProblemBtn">New Problem</button>
                     </div>
                 </div>
 
                 <!-- Side panel -->
                 <div class="side-panel" id="sidePanel">
-                    <div class="piles-card">
-                        <div class="piles-title">Each pile has:</div>
-                        <div class="piles-container" id="pilesContainer"></div>
-                    </div>
-
-                    <div class="mult-card">
-                        <div class="mult-title" id="multTitle">Multiplication Facts</div>
-                        <div class="mult-grid" id="multGrid"></div>
+                    <div class="table-card">
+                        <div class="table-card-title">My × Table</div>
                         <div class="table-thumb-container">
                             <img src="https://mrh-swes.github.io/Long-Division-Buddy/MultiplicationTable.png" 
                                  alt="Multiplication Table" 
@@ -1247,8 +1229,6 @@
             document.getElementById('conceptResult').textContent = '?';
 
             renderDivision();
-            renderPiles();
-            updateMultTable();
             nextStep();
         }
 
@@ -1324,52 +1304,6 @@
             });
         }
 
-        function renderPiles() {
-            const container = document.getElementById('pilesContainer');
-            container.innerHTML = '';
-
-            const maxQuotient = Math.floor(dividend / divisor);
-            
-            for (let i = 0; i < divisor; i++) {
-                const pile = document.createElement('div');
-                pile.className = 'pile';
-
-                const icon = document.createElement('div');
-                icon.className = 'pile-icon';
-                const fillPercent = maxQuotient > 0 ? (runningQuotient / maxQuotient) * 100 : 0;
-                icon.style.setProperty('--fill', fillPercent + '%');
-
-                const count = document.createElement('div');
-                count.className = 'pile-count';
-                count.textContent = runningQuotient;
-
-                pile.appendChild(icon);
-                pile.appendChild(count);
-                container.appendChild(pile);
-            }
-        }
-
-        function updateMultTable(target = null) {
-            document.getElementById('multTitle').textContent = divisor + ' × Table';
-            const grid = document.getElementById('multGrid');
-            grid.innerHTML = '';
-
-            for (let i = 1; i <= 10; i++) {
-                const product = divisor * i;
-                const div = document.createElement('div');
-                div.className = 'mult-fact';
-                div.textContent = `${divisor} × ${i} = ${product}`;
-
-                if (target !== null) {
-                    if (product === target) div.classList.add('exact');
-                    else if (product <= target) div.classList.add('fits');
-                    else div.classList.add('too-big');
-                }
-
-                grid.appendChild(div);
-            }
-        }
-
         function nextStep() {
             document.getElementById('feedback').classList.remove('show');
             attempts = 0;
@@ -1390,7 +1324,6 @@
         function showCheckFit() {
             document.getElementById('promptText').innerHTML = 
                 `Can <strong>${divisor}</strong> go into <strong>${currentNumber}</strong>?`;
-            updateMultTable(currentNumber);
 
             document.getElementById('inputRow').innerHTML = `
                 <div class="yes-no-btns">
@@ -1432,8 +1365,7 @@
             document.getElementById('promptText').innerHTML = 
                 `How many times can <strong>${divisor}</strong> go into <strong>${currentNumber}</strong>?<br>
                 <span style="color:var(--text-muted);font-size:0.95rem;">Use your multiplication table! Find the biggest answer that's still ${currentNumber} or less. →</span>`;
-            updateMultTable(currentNumber);
-            highlightMultTable();
+            highlightTableCard();
 
             document.getElementById('inputRow').innerHTML = `
                 <input type="number" class="answer-input" id="answerInput" min="0" max="10" autofocus>
@@ -1445,10 +1377,12 @@
             input.focus();
         }
         
-        function highlightMultTable() {
-            const multCard = document.querySelector('.mult-card');
-            multCard.classList.add('pulse');
-            setTimeout(() => multCard.classList.remove('pulse'), 1500);
+        function highlightTableCard() {
+            const tableCard = document.querySelector('.table-card');
+            if (tableCard) {
+                tableCard.classList.add('pulse');
+                setTimeout(() => tableCard.classList.remove('pulse'), 1500);
+            }
         }
 
         function handleEstimate() {
@@ -1464,7 +1398,6 @@
                 runningQuotient = parseInt(quotientDigits.filter(d => d !== null).join('') || '0');
                 
                 renderDivision();
-                renderPiles();
                 document.getElementById('conceptResult').textContent = runningQuotient;
                 
                 showFeedback('success', 'Correct!');
@@ -1608,11 +1541,40 @@
             if (remainder > 0) result += ` R${remainder}`;
 
             document.getElementById('resultText').textContent = result;
-            document.getElementById('pileSummary').textContent = 
-                `You put ${quotient} in each of your ${divisor} piles` + 
-                (remainder > 0 ? ` with ${remainder} left over!` : '!');
+            
+            const summaryText = remainder > 0 
+                ? `You split ${dividend} into ${divisor} piles of ${quotient}, with ${remainder} left over!`
+                : `You split ${dividend} into ${divisor} equal piles of ${quotient}!`;
+            document.getElementById('pileSummary').textContent = summaryText;
+
+            // Create victory piles
+            const victoryContainer = document.getElementById('victoryPiles');
+            victoryContainer.innerHTML = '';
+            
+            for (let i = 0; i < divisor; i++) {
+                const pile = document.createElement('div');
+                pile.className = 'victory-pile';
+                pile.innerHTML = `
+                    <div class="victory-pile-box">
+                        <div class="victory-pile-fill" id="pileFill${i}"></div>
+                        <span class="victory-pile-count">${quotient}</span>
+                    </div>
+                    <span class="victory-pile-label">Pile ${i + 1}</span>
+                `;
+                victoryContainer.appendChild(pile);
+            }
 
             document.getElementById('completion').classList.add('show');
+
+            // Animate the piles filling up
+            setTimeout(() => {
+                for (let i = 0; i < divisor; i++) {
+                    const fill = document.getElementById(`pileFill${i}`);
+                    if (fill) {
+                        fill.style.height = '100%';
+                    }
+                }
+            }, 300);
         }
 
         function resetToSetup() {
