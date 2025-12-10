@@ -842,6 +842,107 @@
         .hidden {
             display: none !important;
         }
+
+        /* Multiplication table thumbnail */
+        .table-thumb-container {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .table-thumbnail {
+            width: 80px;
+            height: auto;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+
+        .table-thumbnail:hover {
+            transform: scale(1.05);
+            border-color: var(--blue);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .thumb-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Table modal */
+        .table-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .table-modal.show {
+            display: flex;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content-img {
+            position: relative;
+            z-index: 1;
+            max-width: 90vw;
+            max-height: 90vh;
+            animation: modalPop 0.2s ease;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: var(--coral);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px var(--shadow);
+            transition: all 0.15s;
+        }
+
+        .modal-close:hover {
+            background: var(--coral-light);
+            transform: scale(1.1);
+        }
+
+        .table-full {
+            max-width: 90vw;
+            max-height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -970,8 +1071,27 @@
                     <div class="mult-card">
                         <div class="mult-title" id="multTitle">Multiplication Facts</div>
                         <div class="mult-grid" id="multGrid"></div>
+                        <div class="table-thumb-container">
+                            <img src="https://mrh-swes.github.io/Long-Division-Buddy/MultiplicationTable.png" 
+                                 alt="Multiplication Table" 
+                                 class="table-thumbnail"
+                                 id="tableThumb"
+                                 title="Click to enlarge">
+                            <span class="thumb-label">Click to enlarge</span>
+                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Multiplication Table Modal -->
+        <div class="table-modal" id="tableModal">
+            <div class="modal-backdrop" onclick="closeTableModal()"></div>
+            <div class="modal-content-img">
+                <button class="modal-close" onclick="closeTableModal()">×</button>
+                <img src="https://mrh-swes.github.io/Long-Division-Buddy/MultiplicationTable.png" 
+                     alt="Multiplication Table"
+                     class="table-full">
             </div>
         </div>
     </div>
@@ -995,6 +1115,24 @@
         const problemScreen = document.getElementById('problemScreen');
         const resetBtn = document.getElementById('resetBtn');
         const conceptBanner = document.getElementById('conceptBanner');
+        const tableModal = document.getElementById('tableModal');
+        const tableThumb = document.getElementById('tableThumb');
+
+        // Table modal handlers
+        tableThumb.addEventListener('click', () => {
+            tableModal.classList.add('show');
+        });
+
+        function closeTableModal() {
+            tableModal.classList.remove('show');
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && tableModal.classList.contains('show')) {
+                closeTableModal();
+            }
+        });
 
         // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
