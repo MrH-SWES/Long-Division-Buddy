@@ -591,16 +591,6 @@
             color: var(--blue);
         }
 
-        .rounding-instruction {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-            background: #e8f0fe;
-            padding: 8px 12px;
-            border-radius: 8px;
-            display: inline-block;
-        }
-
         .input-row {
             display: flex;
             justify-content: center;
@@ -681,6 +671,20 @@
         .yn-btn:active {
             transform: translateY(2px);
             box-shadow: 0 1px 0 var(--shadow);
+        }
+
+        /* Helper Button */
+        .btn-help {
+            background: #e8f0fe;
+            color: var(--blue-dark);
+            border: 2px solid var(--blue);
+            margin-left: 8px;
+            font-size: 0.9rem;
+            padding: 10px 16px;
+        }
+        
+        .btn-help:hover {
+            background: #d2e3fc;
         }
 
         /* Feedback */
@@ -799,6 +803,84 @@
         .victory-pile-label {
             font-size: 0.85rem;
             color: var(--text-muted);
+        }
+
+        /* ESTIMATION MODAL */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.6); 
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 32px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 16px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--text);
+        }
+
+        .modal h3 {
+            margin-bottom: 16px;
+            color: var(--blue);
+            font-size: 1.5rem;
+        }
+
+        .est-feedback {
+            margin-top: 16px;
+            font-weight: 500;
+            min-height: 24px;
+        }
+        
+        .est-feedback.success { color: var(--green); }
+        .est-feedback.error { color: var(--coral); }
+        
+        .est-input-group {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
         }
 
         /* Utility */
@@ -920,6 +1002,16 @@
                 </div>
             </div>
         </div>
+        
+        <div id="estimationModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeEstimationHelper()">&times;</span>
+                <h3 id="estTitle">Estimation Helper</h3>
+                <p id="estPrompt" class="prompt-text"></p>
+                <div id="estInputArea" class="est-input-group"></div>
+                <div id="estFeedback" class="est-feedback"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -936,8 +1028,8 @@
         let currentQuotientDigit = 0;
         let runningQuotient = 0;
 
-        // Estimation/Rounding state
-        let roundStep = 'none'; // 'round-divisor', 'round-dividend', 'estimate-rounded'
+        // Estimation Helper State
+        let estStep = 0;
         let roundedDivisor = 0;
         let roundedDividend = 0;
 
@@ -946,6 +1038,7 @@
         const problemScreen = document.getElementById('problemScreen');
         const resetBtn = document.getElementById('resetBtn');
         const conceptBanner = document.getElementById('conceptBanner');
+        const estModal = document.getElementById('estimationModal');
 
         // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1046,7 +1139,6 @@
             attempts = 0;
             step = 'check-fit';
             runningQuotient = 0;
-            roundStep = 'none';
 
             setupScreen.style.display = 'none';
             problemScreen.style.display = 'block';
@@ -1185,8 +1277,6 @@
             if (answer === canFit) {
                 if (canFit) {
                     step = 'estimate';
-                    // Reset rounding sub-states
-                    roundStep = (divisor > 12) ? 'round-divisor' : 'none'; 
                     nextStep();
                 } else {
                     if (currentPosition === 0) {
@@ -1210,107 +1300,26 @@
         }
 
         function showEstimate() {
-            // Case 1: Simple division (divisor <= 12)
-            if (roundStep === 'none') {
-                 document.getElementById('promptText').innerHTML = 
-                    `How many times can <strong>${divisor}</strong> go into <strong>${currentNumber}</strong>?`;
-                renderAnswerInput('handleEstimate');
-                return;
+            document.getElementById('promptText').innerHTML = 
+                `How many times can <strong>${divisor}</strong> go into <strong>${currentNumber}</strong>?`;
+            
+            let btnHtml = '';
+            // Only show the helper button if the divisor is large (> 12)
+            if (divisor > 12) {
+                btnHtml = `<button class="header-btn btn-help" onclick="openEstimationHelper()">💡 Help me guess</button>`;
             }
 
-            // Case 2: Guided Rounding Steps
-            if (roundStep === 'round-divisor') {
-                const target = Math.round(divisor / 10) * 10;
-                document.getElementById('promptText').innerHTML = 
-                    `To make this easier, let's round <strong>${divisor}</strong> to the nearest 10.`;
-                renderAnswerInput('handleRoundDivisor', target);
-            }
-            else if (roundStep === 'round-dividend') {
-                const target = Math.round(currentNumber / 10) * 10;
-                document.getElementById('promptText').innerHTML = 
-                    `Now round <strong>${currentNumber}</strong> to the nearest 10.`;
-                renderAnswerInput('handleRoundDividend', target);
-            }
-            else if (roundStep === 'estimate-rounded') {
-                const est = Math.floor(roundedDividend / roundedDivisor);
-                document.getElementById('promptText').innerHTML = 
-                    `How many times does <strong>${roundedDivisor}</strong> go into <strong>${roundedDividend}</strong>?<br>
-                    <span class="rounding-instruction">Hint: It's like asking how many ${roundedDivisor/10}s go into ${roundedDividend/10}</span>`;
-                renderAnswerInput('handleEstimateRounded', est);
-            }
-            else if (roundStep === 'final-guess') {
-                // We have a preliminary estimate, now ask for the real one
-                document.getElementById('promptText').innerHTML = 
-                    `Okay, let's estimate <strong>${divisor}</strong> into <strong>${currentNumber}</strong>.<br>
-                     Try the number you just found!`;
-                renderAnswerInput('handleEstimate'); // The check logic handles if they need to adjust up/down
-            }
-        }
-
-        function renderAnswerInput(handlerName, targetVal) {
-             document.getElementById('inputRow').innerHTML = `
-                <input type="number" class="answer-input" id="answerInput" min="0" autofocus>
-                <button class="check-btn" onclick="${handlerName}()">Check</button>
+            document.getElementById('inputRow').innerHTML = `
+                <input type="number" class="answer-input" id="answerInput" min="0" max="10" autofocus>
+                <button class="check-btn" onclick="handleEstimate()">Check</button>
+                ${btnHtml}
             `;
+
             const input = document.getElementById('answerInput');
-            input.addEventListener('keypress', e => { if (e.key === 'Enter') window[handlerName](); });
-            
-            // Auto-focus input
-            setTimeout(() => input.focus(), 50);
+            input.addEventListener('keypress', e => { if (e.key === 'Enter') handleEstimate(); });
+            input.focus();
         }
-
-        // Sub-handlers for rounding flow
-        function handleRoundDivisor() {
-            const input = document.getElementById('answerInput');
-            const val = parseInt(input.value);
-            const target = Math.round(divisor / 10) * 10;
-            
-            // Edge case: don't round to 0 if divisor is small but > 10 (like 13 rounds to 10)
-            // But if divisor was say 4, rounding to 0 is bad. Logic protects us since divisor > 12.
-
-            if (val === target) {
-                roundedDivisor = target;
-                showFeedback('success', 'Good!');
-                roundStep = 'round-dividend';
-                setTimeout(showEstimate, 700);
-            } else {
-                showFeedback('error', `Not quite. ${divisor} is closer to ${target}.`);
-            }
-        }
-
-        function handleRoundDividend() {
-            const input = document.getElementById('answerInput');
-            const val = parseInt(input.value);
-            const target = Math.round(currentNumber / 10) * 10;
-
-            if (val === target) {
-                roundedDividend = target;
-                showFeedback('success', 'Nice!');
-                roundStep = 'estimate-rounded';
-                setTimeout(showEstimate, 700);
-            } else {
-                showFeedback('error', `Try again. ${currentNumber} is closer to ${target}.`);
-            }
-        }
-
-        function handleEstimateRounded() {
-            const input = document.getElementById('answerInput');
-            const val = parseInt(input.value);
-            // Integer division for estimate
-            const target = Math.floor(roundedDividend / roundedDivisor); 
-
-            // Be lenient: allow +/- 1 because rounding estimation isn't always exact
-            if (Math.abs(val - target) <= 1 || val === target) {
-                showFeedback('success', 'Great estimate!');
-                // Pre-fill next step might be nice, but let's just move them
-                roundStep = 'final-guess';
-                setTimeout(showEstimate, 700);
-            } else {
-                 showFeedback('hint', `Think: ${roundedDivisor/10} × ? is close to ${roundedDividend/10}`);
-            }
-        }
-
-        // Main Estimate Handler
+        
         function handleEstimate() {
             const input = document.getElementById('answerInput');
             const answer = parseInt(input.value);
@@ -1343,10 +1352,143 @@
             }
         }
 
+        // --- ESTIMATION HELPER MODAL LOGIC ---
+        
+        function openEstimationHelper() {
+            estStep = 1;
+            estModal.classList.add('show');
+            document.getElementById('estFeedback').textContent = '';
+            document.getElementById('estFeedback').className = 'est-feedback';
+            renderEstimationStep();
+        }
+
+        function closeEstimationHelper() {
+            estModal.classList.remove('show');
+        }
+
+        function renderEstimationStep() {
+            const prompt = document.getElementById('estPrompt');
+            const area = document.getElementById('estInputArea');
+            area.innerHTML = '';
+            
+            // Auto focus helper
+            const addInput = (handler) => {
+                 area.innerHTML = `
+                    <input type="number" class="answer-input" id="estInput" autofocus>
+                    <button class="check-btn" onclick="${handler}()">Check</button>
+                `;
+                const inp = document.getElementById('estInput');
+                inp.addEventListener('keypress', e => { if (e.key === 'Enter') window[handler](); });
+                setTimeout(() => inp.focus(), 50);
+            };
+
+            if (estStep === 1) {
+                // Round Divisor
+                const target = Math.round(divisor / 10) * 10;
+                prompt.innerHTML = `Let's make this easier. Round <strong>${divisor}</strong> to the nearest 10.`;
+                addInput('handleEstRoundDivisor');
+            } 
+            else if (estStep === 2) {
+                // Round Dividend
+                prompt.innerHTML = `Now, round <strong>${currentNumber}</strong> to the nearest 10.`;
+                addInput('handleEstRoundDividend');
+            } 
+            else if (estStep === 3) {
+                // Estimate based on rounded values
+                const est = Math.floor(roundedDividend / roundedDivisor);
+                const smallDiv = roundedDivisor / 10;
+                const smallDivd = roundedDividend / 10;
+                prompt.innerHTML = `How many times does <strong>${roundedDivisor}</strong> go into <strong>${roundedDividend}</strong>?<br>
+                <span style="font-size:0.9rem; color:#666;">(Hint: It's the same as ${smallDiv} into ${smallDivd})</span>`;
+                addInput('handleEstEstimate');
+            } 
+            else if (estStep === 4) {
+                // Success!
+                const est = Math.floor(roundedDividend / roundedDivisor);
+                prompt.innerHTML = `Great! Try <strong>${est}</strong> for the real problem.`;
+                area.innerHTML = `<button class="check-btn" onclick="applyEstimation(${est})">Use ${est}</button>`;
+            }
+        }
+
+        function estFeedback(type, msg) {
+            const el = document.getElementById('estFeedback');
+            el.className = 'est-feedback ' + type;
+            el.textContent = msg;
+        }
+
+        function handleEstRoundDivisor() {
+            const val = parseInt(document.getElementById('estInput').value);
+            const target = Math.round(divisor / 10) * 10;
+            if (val === target) {
+                roundedDivisor = target;
+                estFeedback('success', 'Good!');
+                estStep = 2;
+                setTimeout(() => {
+                    document.getElementById('estFeedback').textContent = '';
+                    renderEstimationStep();
+                }, 600);
+            } else {
+                estFeedback('error', `Not quite. ${divisor} is closer to ${target}.`);
+            }
+        }
+
+        function handleEstRoundDividend() {
+            const val = parseInt(document.getElementById('estInput').value);
+            const target = Math.round(currentNumber / 10) * 10;
+            if (val === target) {
+                roundedDividend = target;
+                estFeedback('success', 'Nice!');
+                estStep = 3;
+                setTimeout(() => {
+                    document.getElementById('estFeedback').textContent = '';
+                    renderEstimationStep();
+                }, 600);
+            } else {
+                estFeedback('error', `Try again. ${currentNumber} is closer to ${target}.`);
+            }
+        }
+
+        function handleEstEstimate() {
+            const val = parseInt(document.getElementById('estInput').value);
+            const target = Math.floor(roundedDividend / roundedDivisor);
+            // Allow +/- 1 for estimation looseness
+            if (Math.abs(val - target) <= 1 || val === target) {
+                estFeedback('success', 'Excellent!');
+                estStep = 4;
+                setTimeout(() => {
+                    document.getElementById('estFeedback').textContent = '';
+                    renderEstimationStep();
+                }, 600);
+            } else {
+                const smallDiv = roundedDivisor / 10;
+                estFeedback('error', `Think about your ${smallDiv} times tables.`);
+            }
+        }
+
+        function applyEstimation(val) {
+            closeEstimationHelper();
+            const mainInput = document.getElementById('answerInput');
+            if (mainInput) {
+                mainInput.value = val;
+                mainInput.focus();
+                // We don't auto-submit, letting them click check to verify it works for the real numbers
+            }
+        }
+
+        // --- END ESTIMATION HELPER ---
+
         function showMultiply() {
             document.getElementById('promptText').innerHTML = 
                 `What is <strong>${divisor} × ${currentQuotientDigit}</strong>?`;
-            renderAnswerInput('handleMultiply');
+
+            document.getElementById('inputRow').innerHTML = `
+                <input type="number" class="answer-input" id="answerInput" autofocus>
+                <button class="check-btn" onclick="handleMultiply()">Check</button>
+            `;
+
+            const input = document.getElementById('answerInput');
+            input.addEventListener('keypress', e => { if (e.key === 'Enter') handleMultiply(); });
+            input.focus();
         }
 
         function handleMultiply() {
@@ -1375,7 +1517,15 @@
             const product = divisor * currentQuotientDigit;
             document.getElementById('promptText').innerHTML = 
                 `What is <strong>${currentNumber} − ${product}</strong>?`;
-            renderAnswerInput('handleSubtract');
+
+            document.getElementById('inputRow').innerHTML = `
+                <input type="number" class="answer-input" id="answerInput" autofocus>
+                <button class="check-btn" onclick="handleSubtract()">Check</button>
+            `;
+
+            const input = document.getElementById('answerInput');
+            input.addEventListener('keypress', e => { if (e.key === 'Enter') handleSubtract(); });
+            input.focus();
         }
 
         function handleSubtract() {
