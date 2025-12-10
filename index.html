@@ -37,7 +37,7 @@
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
@@ -375,14 +375,8 @@
 
         .problem-layout {
             display: grid;
-            grid-template-columns: 1fr 320px;
+            grid-template-columns: 1fr;
             gap: 24px;
-        }
-
-        @media (max-width: 900px) {
-            .problem-layout {
-                grid-template-columns: 1fr;
-            }
         }
 
         /* Main work area */
@@ -391,6 +385,9 @@
             border-radius: 16px;
             padding: 24px;
             box-shadow: 0 4px 12px var(--shadow);
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         /* Concept banner */
@@ -572,7 +569,7 @@
         }
 
         .work-digit.brought {
-            color: var(--text); /* Changed from red to black per request */
+            color: var(--text); 
             font-weight: 700;
         }
 
@@ -592,6 +589,16 @@
 
         .prompt-text strong {
             color: var(--blue);
+        }
+
+        .rounding-instruction {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+            background: #e8f0fe;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: inline-block;
         }
 
         .input-row {
@@ -704,35 +711,6 @@
             color: #f57c00;
         }
 
-        /* Side panel */
-        .side-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* Table card */
-        .table-card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 12px var(--shadow);
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .table-card.pulse {
-            box-shadow: 0 0 0 4px var(--blue), 0 4px 12px var(--shadow);
-            transform: scale(1.02);
-        }
-
-        .table-card-title {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--text-muted);
-        }
-
         /* Completion / Victory */
         .completion {
             display: none;
@@ -828,106 +806,6 @@
             display: none !important;
         }
 
-        /* Multiplication table thumbnail */
-        .table-thumb-container {
-            margin-top: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .table-thumbnail {
-            width: 80px;
-            height: auto;
-            border-radius: 8px;
-            border: 2px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 6px var(--shadow);
-        }
-
-        .table-thumbnail:hover {
-            transform: scale(1.05);
-            border-color: var(--blue);
-            box-shadow: 0 4px 12px var(--shadow);
-        }
-
-        .thumb-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        /* Table modal */
-        .table-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .table-modal.show {
-            display: flex;
-        }
-
-        .modal-backdrop {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-        }
-
-        .modal-content-img {
-            position: relative;
-            z-index: 1;
-            max-width: 90vw;
-            max-height: 90vh;
-            animation: modalPop 0.2s ease;
-        }
-
-        @keyframes modalPop {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: -12px;
-            right: -12px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: var(--coral);
-            color: white;
-            font-size: 1.5rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px var(--shadow);
-            transition: all 0.15s;
-        }
-
-        .modal-close:hover {
-            background: var(--coral-light);
-            transform: scale(1.1);
-        }
-
-        .table-full {
-            max-width: 90vw;
-            max-height: 85vh;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
     </style>
 </head>
 <body>
@@ -1040,30 +918,6 @@
                         <button class="header-btn btn-green" id="newProblemBtn">New Problem</button>
                     </div>
                 </div>
-
-                <div class="side-panel" id="sidePanel">
-                    <div class="table-card">
-                        <div class="table-card-title">My × Table</div>
-                        <div class="table-thumb-container">
-                            <img src="https://mrh-swes.github.io/Long-Division-Buddy/MultiplicationTable.png" 
-                                 alt="Multiplication Table" 
-                                 class="table-thumbnail"
-                                 id="tableThumb"
-                                 title="Click to enlarge">
-                            <span class="thumb-label">Click to enlarge</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="table-modal" id="tableModal">
-            <div class="modal-backdrop" onclick="closeTableModal()"></div>
-            <div class="modal-content-img">
-                <button class="modal-close" onclick="closeTableModal()">×</button>
-                <img src="https://mrh-swes.github.io/Long-Division-Buddy/MultiplicationTable.png" 
-                     alt="Multiplication Table"
-                     class="table-full">
             </div>
         </div>
     </div>
@@ -1082,29 +936,16 @@
         let currentQuotientDigit = 0;
         let runningQuotient = 0;
 
+        // Estimation/Rounding state
+        let roundStep = 'none'; // 'round-divisor', 'round-dividend', 'estimate-rounded'
+        let roundedDivisor = 0;
+        let roundedDividend = 0;
+
         // DOM
         const setupScreen = document.getElementById('setupScreen');
         const problemScreen = document.getElementById('problemScreen');
         const resetBtn = document.getElementById('resetBtn');
         const conceptBanner = document.getElementById('conceptBanner');
-        const tableModal = document.getElementById('tableModal');
-        const tableThumb = document.getElementById('tableThumb');
-
-        // Table modal handlers
-        tableThumb.addEventListener('click', () => {
-            tableModal.classList.add('show');
-        });
-
-        function closeTableModal() {
-            tableModal.classList.remove('show');
-        }
-
-        // Close modal on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && tableModal.classList.contains('show')) {
-                closeTableModal();
-            }
-        });
 
         // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1205,14 +1046,14 @@
             attempts = 0;
             step = 'check-fit';
             runningQuotient = 0;
+            roundStep = 'none';
 
             setupScreen.style.display = 'none';
             problemScreen.style.display = 'block';
             resetBtn.classList.remove('hidden');
             document.getElementById('completion').classList.remove('show');
             document.getElementById('promptArea').style.display = 'block';
-            document.getElementById('sidePanel').classList.remove('hidden');
-
+            
             // Update concept banner
             document.getElementById('conceptAmount').textContent = dividend + ' things';
             document.getElementById('conceptPiles').textContent = divisor;
@@ -1344,6 +1185,8 @@
             if (answer === canFit) {
                 if (canFit) {
                     step = 'estimate';
+                    // Reset rounding sub-states
+                    roundStep = (divisor > 12) ? 'round-divisor' : 'none'; 
                     nextStep();
                 } else {
                     if (currentPosition === 0) {
@@ -1367,29 +1210,107 @@
         }
 
         function showEstimate() {
-            document.getElementById('promptText').innerHTML = 
-                `How many times can <strong>${divisor}</strong> go into <strong>${currentNumber}</strong>?<br>
-                <span style="color:var(--text-muted);font-size:0.95rem;">Use your multiplication table! Find the biggest answer that's still ${currentNumber} or less. →</span>`;
-            highlightTableCard();
+            // Case 1: Simple division (divisor <= 12)
+            if (roundStep === 'none') {
+                 document.getElementById('promptText').innerHTML = 
+                    `How many times can <strong>${divisor}</strong> go into <strong>${currentNumber}</strong>?`;
+                renderAnswerInput('handleEstimate');
+                return;
+            }
 
-            document.getElementById('inputRow').innerHTML = `
-                <input type="number" class="answer-input" id="answerInput" min="0" max="10" autofocus>
-                <button class="check-btn" onclick="handleEstimate()">Check</button>
-            `;
-
-            const input = document.getElementById('answerInput');
-            input.addEventListener('keypress', e => { if (e.key === 'Enter') handleEstimate(); });
-            input.focus();
-        }
-        
-        function highlightTableCard() {
-            const tableCard = document.querySelector('.table-card');
-            if (tableCard) {
-                tableCard.classList.add('pulse');
-                setTimeout(() => tableCard.classList.remove('pulse'), 1500);
+            // Case 2: Guided Rounding Steps
+            if (roundStep === 'round-divisor') {
+                const target = Math.round(divisor / 10) * 10;
+                document.getElementById('promptText').innerHTML = 
+                    `To make this easier, let's round <strong>${divisor}</strong> to the nearest 10.`;
+                renderAnswerInput('handleRoundDivisor', target);
+            }
+            else if (roundStep === 'round-dividend') {
+                const target = Math.round(currentNumber / 10) * 10;
+                document.getElementById('promptText').innerHTML = 
+                    `Now round <strong>${currentNumber}</strong> to the nearest 10.`;
+                renderAnswerInput('handleRoundDividend', target);
+            }
+            else if (roundStep === 'estimate-rounded') {
+                const est = Math.floor(roundedDividend / roundedDivisor);
+                document.getElementById('promptText').innerHTML = 
+                    `How many times does <strong>${roundedDivisor}</strong> go into <strong>${roundedDividend}</strong>?<br>
+                    <span class="rounding-instruction">Hint: It's like asking how many ${roundedDivisor/10}s go into ${roundedDividend/10}</span>`;
+                renderAnswerInput('handleEstimateRounded', est);
+            }
+            else if (roundStep === 'final-guess') {
+                // We have a preliminary estimate, now ask for the real one
+                document.getElementById('promptText').innerHTML = 
+                    `Okay, let's estimate <strong>${divisor}</strong> into <strong>${currentNumber}</strong>.<br>
+                     Try the number you just found!`;
+                renderAnswerInput('handleEstimate'); // The check logic handles if they need to adjust up/down
             }
         }
 
+        function renderAnswerInput(handlerName, targetVal) {
+             document.getElementById('inputRow').innerHTML = `
+                <input type="number" class="answer-input" id="answerInput" min="0" autofocus>
+                <button class="check-btn" onclick="${handlerName}()">Check</button>
+            `;
+            const input = document.getElementById('answerInput');
+            input.addEventListener('keypress', e => { if (e.key === 'Enter') window[handlerName](); });
+            
+            // Auto-focus input
+            setTimeout(() => input.focus(), 50);
+        }
+
+        // Sub-handlers for rounding flow
+        function handleRoundDivisor() {
+            const input = document.getElementById('answerInput');
+            const val = parseInt(input.value);
+            const target = Math.round(divisor / 10) * 10;
+            
+            // Edge case: don't round to 0 if divisor is small but > 10 (like 13 rounds to 10)
+            // But if divisor was say 4, rounding to 0 is bad. Logic protects us since divisor > 12.
+
+            if (val === target) {
+                roundedDivisor = target;
+                showFeedback('success', 'Good!');
+                roundStep = 'round-dividend';
+                setTimeout(showEstimate, 700);
+            } else {
+                showFeedback('error', `Not quite. ${divisor} is closer to ${target}.`);
+            }
+        }
+
+        function handleRoundDividend() {
+            const input = document.getElementById('answerInput');
+            const val = parseInt(input.value);
+            const target = Math.round(currentNumber / 10) * 10;
+
+            if (val === target) {
+                roundedDividend = target;
+                showFeedback('success', 'Nice!');
+                roundStep = 'estimate-rounded';
+                setTimeout(showEstimate, 700);
+            } else {
+                showFeedback('error', `Try again. ${currentNumber} is closer to ${target}.`);
+            }
+        }
+
+        function handleEstimateRounded() {
+            const input = document.getElementById('answerInput');
+            const val = parseInt(input.value);
+            // Integer division for estimate
+            const target = Math.floor(roundedDividend / roundedDivisor); 
+
+            // Be lenient: allow +/- 1 because rounding estimation isn't always exact
+            if (Math.abs(val - target) <= 1 || val === target) {
+                showFeedback('success', 'Great estimate!');
+                // Pre-fill next step might be nice, but let's just move them
+                roundStep = 'final-guess';
+                setTimeout(showEstimate, 700);
+            } else {
+                 showFeedback('hint', `Think: ${roundedDivisor/10} × ? is close to ${roundedDividend/10}`);
+            }
+        }
+
+        // Main Estimate Handler
         function handleEstimate() {
             const input = document.getElementById('answerInput');
             const answer = parseInt(input.value);
@@ -1411,11 +1332,11 @@
                 attempts++;
                 const product = answer * divisor;
                 if (answer > correct) {
-                    showFeedback('error', `${divisor} × ${answer} = ${product}. That's bigger than ${currentNumber}! Try a smaller number.`);
+                    showFeedback('error', `${divisor} × ${answer} = ${product}. Too big! Try a smaller number.`);
                 } else if (answer >= 0 && answer < correct) {
-                    showFeedback('hint', `${divisor} × ${answer} = ${product}. That fits, but can you go bigger? Look for the biggest one that's still ${currentNumber} or less.`);
+                    showFeedback('hint', `${divisor} × ${answer} = ${product}. Fits, but you can fit more! Try a bigger number.`);
                 } else {
-                    showFeedback('error', 'Type a number from 1 to 10.');
+                    showFeedback('error', 'Type a valid number.');
                 }
                 input.value = '';
                 input.focus();
@@ -1425,15 +1346,7 @@
         function showMultiply() {
             document.getElementById('promptText').innerHTML = 
                 `What is <strong>${divisor} × ${currentQuotientDigit}</strong>?`;
-
-            document.getElementById('inputRow').innerHTML = `
-                <input type="number" class="answer-input" id="answerInput" autofocus>
-                <button class="check-btn" onclick="handleMultiply()">Check</button>
-            `;
-
-            const input = document.getElementById('answerInput');
-            input.addEventListener('keypress', e => { if (e.key === 'Enter') handleMultiply(); });
-            input.focus();
+            renderAnswerInput('handleMultiply');
         }
 
         function handleMultiply() {
@@ -1449,9 +1362,9 @@
             } else {
                 attempts++;
                 if (attempts >= 2) {
-                    showFeedback('hint', `Look at your table: ${divisor} × ${currentQuotientDigit} = ${correct}`);
+                    showFeedback('hint', `Calculate ${divisor} × ${currentQuotientDigit}`);
                 } else {
-                    showFeedback('error', 'Not quite — check your multiplication table!');
+                    showFeedback('error', 'Check your math again.');
                 }
                 input.value = '';
                 input.focus();
@@ -1462,15 +1375,7 @@
             const product = divisor * currentQuotientDigit;
             document.getElementById('promptText').innerHTML = 
                 `What is <strong>${currentNumber} − ${product}</strong>?`;
-
-            document.getElementById('inputRow').innerHTML = `
-                <input type="number" class="answer-input" id="answerInput" autofocus>
-                <button class="check-btn" onclick="handleSubtract()">Check</button>
-            `;
-
-            const input = document.getElementById('answerInput');
-            input.addEventListener('keypress', e => { if (e.key === 'Enter') handleSubtract(); });
-            input.focus();
+            renderAnswerInput('handleSubtract');
         }
 
         function handleSubtract() {
@@ -1536,8 +1441,8 @@
 
         function showCompletion() {
             document.getElementById('promptArea').style.display = 'none';
-            document.getElementById('sidePanel').classList.add('hidden');
-
+            // No sidebar to hide anymore, but safe to remove class if it existed
+            
             const quotient = Math.floor(dividend / divisor);
             const remainder = dividend % divisor;
 
@@ -1555,7 +1460,10 @@
             const victoryContainer = document.getElementById('victoryPiles');
             victoryContainer.innerHTML = '';
             
-            for (let i = 0; i < divisor; i++) {
+            // Limit piles if divisor is huge
+            const pilesToShow = Math.min(divisor, 12);
+            
+            for (let i = 0; i < pilesToShow; i++) {
                 const pile = document.createElement('div');
                 pile.className = 'victory-pile';
                 pile.innerHTML = `
@@ -1567,12 +1475,19 @@
                 `;
                 victoryContainer.appendChild(pile);
             }
+            
+            if (divisor > 12) {
+                const more = document.createElement('div');
+                more.style.alignSelf = 'center';
+                more.innerHTML = `... and ${divisor - 12} more piles`;
+                victoryContainer.appendChild(more);
+            }
 
             document.getElementById('completion').classList.add('show');
 
             // Animate the piles filling up
             setTimeout(() => {
-                for (let i = 0; i < divisor; i++) {
+                for (let i = 0; i < pilesToShow; i++) {
                     const fill = document.getElementById(`pileFill${i}`);
                     if (fill) {
                         fill.style.height = '100%';
