@@ -483,6 +483,7 @@
             padding: 4px 2px;
             border-radius: 6px;
             transition: all 0.2s;
+            position: relative; /* For the bring-down arrow */
         }
 
         .digit.highlight {
@@ -492,6 +493,39 @@
         .digit.active {
             background: var(--blue);
             color: white;
+        }
+
+        /* Bring Down Button Style */
+        .bring-down-btn {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--blue);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(66, 133, 244, 0.4);
+            animation: bounce 1s infinite;
+            z-index: 10;
+        }
+
+        .bring-down-btn:hover {
+            background: var(--blue-dark);
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        @keyframes bounce {
+            0%, 100% { bottom: -35px; }
+            50% { bottom: -42px; }
         }
 
         /* Work rows */
@@ -539,12 +573,13 @@
 
         .work-digit.brought {
             color: var(--coral);
-            animation: dropIn 0.4s ease;
+            animation: dropIn 0.5s ease-out;
+            font-weight: 700;
         }
 
         @keyframes dropIn {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            0% { transform: translateY(-40px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
         }
 
         /* Prompt area */
@@ -794,37 +829,6 @@
             color: var(--text-muted);
         }
 
-        /* Falling blocks animation */
-        .falling-blocks {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100px;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .falling-block {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: var(--yellow);
-            border-radius: 2px;
-            animation: fall 1.5s ease-in forwards;
-        }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(-20px);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100px);
-                opacity: 0;
-            }
-        }
-
         /* Utility */
         .hidden {
             display: none !important;
@@ -934,13 +938,11 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <h1>Long Division Copilot</h1>
             <button class="header-btn btn-coral hidden" id="resetBtn">Reset</button>
         </div>
 
-        <!-- Setup Screen -->
         <div class="setup-screen" id="setupScreen">
             <div class="setup-card">
                 <h2>Enter Your Problem</h2>
@@ -950,21 +952,19 @@
                     <button class="tab-btn" data-tab="house">Use the House</button>
                 </div>
 
-                <!-- Simple input -->
                 <div class="input-method active" id="simpleMethod">
                     <div class="simple-inputs">
                         <div class="input-group">
                             <label>Big number (goes inside the house)</label>
-                            <input type="number" id="bigNumber" min="10" max="99999" placeholder="e.g. 985">
+                            <input type="number" id="bigNumber" min="10" max="99999" placeholder="e.g. 100">
                         </div>
                         <div class="input-group">
                             <label>Small number (goes outside)</label>
-                            <input type="number" id="smallNumber" min="2" max="99" placeholder="e.g. 5">
+                            <input type="number" id="smallNumber" min="2" max="99" placeholder="e.g. 1">
                         </div>
                     </div>
                 </div>
 
-                <!-- House input -->
                 <div class="input-method" id="houseMethod">
                     <div class="house-container">
                         <div class="house-visual">
@@ -1008,15 +1008,13 @@
             </div>
         </div>
 
-        <!-- Problem Screen -->
         <div class="problem-screen" id="problemScreen">
             <div class="problem-layout">
-                <!-- Main work area -->
                 <div class="work-panel">
                     <div class="concept-banner" id="conceptBanner">
-                        <span class="amount" id="conceptAmount">985 things</span>
+                        <span class="amount" id="conceptAmount">100 things</span>
                         <span class="arrow">→</span>
-                        <span class="piles-text">splitting into <strong id="conceptPiles">5</strong> equal piles</span>
+                        <span class="piles-text">splitting into <strong id="conceptPiles">1</strong> equal piles</span>
                         <span class="arrow">→</span>
                         <span class="piles-text"><strong id="conceptResult">?</strong> in each pile</span>
                     </div>
@@ -1049,7 +1047,6 @@
                     </div>
                 </div>
 
-                <!-- Side panel -->
                 <div class="side-panel" id="sidePanel">
                     <div class="table-card">
                         <div class="table-card-title">My × Table</div>
@@ -1066,7 +1063,6 @@
             </div>
         </div>
 
-        <!-- Multiplication Table Modal -->
         <div class="table-modal" id="tableModal">
             <div class="modal-backdrop" onclick="closeTableModal()"></div>
             <div class="modal-content-img">
@@ -1164,8 +1160,8 @@
             const big = parseInt(document.getElementById('bigNumber').value || document.getElementById('houseDividend').value);
             const small = parseInt(document.getElementById('smallNumber').value || document.getElementById('houseDivisor').value);
 
-            if (!small || small < 2 || small > 99) {
-                alert('Enter a small number between 2 and 99');
+            if (!small || small < 1 || small > 99) {
+                alert('Enter a small number between 1 and 99');
                 return;
             }
             if (!big || big < 10 || big > 99999) {
@@ -1241,9 +1237,20 @@
                 const span = document.createElement('span');
                 span.className = 'digit';
                 span.textContent = d;
+                
                 if (i <= currentPosition) {
                     span.classList.add(i === currentPosition ? 'active' : 'highlight');
                 }
+
+                // If waiting for manual bring down, add the button to the next digit
+                if (step === 'waiting-for-bring-down' && i === currentPosition) {
+                     const btn = document.createElement('button');
+                     btn.className = 'bring-down-btn';
+                     btn.innerHTML = '↓';
+                     btn.onclick = confirmBringDown;
+                     span.appendChild(btn);
+                }
+
                 dividendEl.appendChild(span);
             });
 
@@ -1317,7 +1324,11 @@
                 case 'estimate': showEstimate(); break;
                 case 'multiply': showMultiply(); break;
                 case 'subtract': showSubtract(); break;
-                case 'bring-down': doBringDown(); break;
+                case 'bring-down': initBringDown(); break;
+                case 'waiting-for-bring-down': 
+                    document.getElementById('promptText').innerHTML = 'Click the blue arrow below the next number to bring it down!';
+                    document.getElementById('inputRow').innerHTML = '';
+                    break;
             }
         }
 
@@ -1498,8 +1509,15 @@
             }
         }
 
-        function doBringDown() {
+        function initBringDown() {
+            // Prepare for the manual interaction
             currentPosition++;
+            step = 'waiting-for-bring-down';
+            renderDivision(); // This will trigger the button rendering in the dividend row
+            nextStep();
+        }
+
+        function confirmBringDown() {
             const brought = dividendDigits[currentPosition];
 
             if (workRows.length > 0) {
@@ -1511,16 +1529,8 @@
                 currentNumber = currentNumber * 10 + brought;
             }
 
-            renderDivision();
-
-            document.getElementById('promptText').innerHTML = 
-                `Bring down the <strong>${brought}</strong> to make <strong>${currentNumber}</strong>.`;
-            document.getElementById('inputRow').innerHTML = 
-                `<button class="check-btn" onclick="continueToBringDown()">Continue</button>`;
-        }
-
-        function continueToBringDown() {
             step = 'check-fit';
+            renderDivision();
             nextStep();
         }
 
