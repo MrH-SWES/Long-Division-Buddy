@@ -37,7 +37,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
@@ -375,8 +375,17 @@
 
         .problem-layout {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 280px;
             gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .problem-layout {
+                grid-template-columns: 1fr;
+            }
+            .visual-sidebar {
+                order: -1;
+            }
         }
 
         /* Main work area */
@@ -385,9 +394,101 @@
             border-radius: 16px;
             padding: 24px;
             box-shadow: 0 4px 12px var(--shadow);
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
+        }
+
+        /* Visual Sidebar */
+        .visual-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .visual-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .visual-card h3 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Blocks pool */
+        .blocks-pool {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            min-height: 80px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            justify-content: center;
+        }
+
+        .pool-block {
+            width: 8px;
+            height: 8px;
+            background: var(--blue);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .pool-block.used {
+            opacity: 0.2;
+        }
+
+        /* Containers */
+        .containers-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .container-box {
+            width: 50px;
+            height: 60px;
+            background: #e8f5e9;
+            border: 2px solid var(--green);
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px;
+        }
+
+        .container-blocks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .container-block {
+            width: 6px;
+            height: 6px;
+            background: var(--green);
+            border-radius: 1px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+
+        .container-block.filled {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .container-label {
+            font-size: 0.65rem;
+            color: var(--green);
+            font-weight: 600;
         }
 
         /* Concept banner */
@@ -437,7 +538,7 @@
             display: flex;
             min-height: 2.5rem;
             margin-bottom: 4px;
-            margin-left: 70px; /* space for divisor */
+            margin-left: 70px;
         }
 
         .quotient-digit {
@@ -480,7 +581,7 @@
             padding: 4px 2px;
             border-radius: 6px;
             transition: all 0.2s;
-            position: relative; /* For the bring-down arrow */
+            position: relative;
         }
 
         .digit.highlight {
@@ -528,7 +629,7 @@
         /* Work rows */
         .work-rows {
             margin-top: 8px;
-            margin-left: 70px; /* same as quotient to align with dividend */
+            margin-left: 70px;
             min-height: 150px;
         }
 
@@ -678,13 +779,41 @@
             background: #e8f0fe;
             color: var(--blue-dark);
             border: 2px solid var(--blue);
-            margin-left: 8px;
             font-size: 0.9rem;
             padding: 10px 16px;
         }
         
         .btn-help:hover {
             background: #d2e3fc;
+        }
+
+        /* Mult Chart Thumbnail Button */
+        .mult-chart-btn {
+            padding: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 3px solid var(--blue);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 0 var(--blue-dark);
+        }
+
+        .mult-chart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 0 var(--blue-dark);
+        }
+
+        .mult-chart-btn:active {
+            transform: scale(0.98) translateY(2px);
+            box-shadow: 0 1px 0 var(--blue-dark);
+        }
+
+        .mult-chart-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         /* Feedback */
@@ -808,7 +937,7 @@
         }
         .victory-piles.tiny .victory-pile-label {
             font-size: 0.65rem;
-            display: none; /* Hide labels when scaling down significantly to reduce clutter */
+            display: none;
         }
 
         .victory-pile-fill {
@@ -1085,6 +1214,17 @@
                         <button class="header-btn btn-green" id="newProblemBtn">New Problem</button>
                     </div>
                 </div>
+
+                <div class="visual-sidebar">
+                    <div class="visual-card">
+                        <h3>Blocks to Sort</h3>
+                        <div class="blocks-pool" id="blocksPool"></div>
+                    </div>
+                    <div class="visual-card">
+                        <h3>Containers</h3>
+                        <div class="containers-area" id="containersArea"></div>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -1120,6 +1260,7 @@
         let step = 'check-fit';
         let currentQuotientDigit = 0;
         let runningQuotient = 0;
+        let blocksUsed = 0;
 
         // Estimation Helper State
         let estStep = 0;
@@ -1232,6 +1373,7 @@
             attempts = 0;
             step = 'check-fit';
             runningQuotient = 0;
+            blocksUsed = 0;
 
             setupScreen.style.display = 'none';
             problemScreen.style.display = 'block';
@@ -1244,8 +1386,65 @@
             document.getElementById('conceptPiles').textContent = divisor;
             document.getElementById('conceptResult').textContent = '?';
 
+            // Initialize visual sidebar
+            initializeVisualSidebar();
+
             renderDivision();
             nextStep();
+        }
+
+        function initializeVisualSidebar() {
+            // Create blocks pool
+            const pool = document.getElementById('blocksPool');
+            pool.innerHTML = '';
+            for (let i = 0; i < dividend; i++) {
+                const block = document.createElement('div');
+                block.className = 'pool-block';
+                block.id = `pool-block-${i}`;
+                pool.appendChild(block);
+            }
+
+            // Create containers
+            const containers = document.getElementById('containersArea');
+            containers.innerHTML = '';
+            for (let i = 0; i < divisor; i++) {
+                const container = document.createElement('div');
+                container.className = 'container-box';
+                container.innerHTML = `
+                    <div class="container-blocks" id="container-${i}"></div>
+                    <div class="container-label">${i + 1}</div>
+                `;
+                containers.appendChild(container);
+            }
+        }
+
+        function distributeBlocks(count) {
+            // Mark blocks as used
+            for (let i = 0; i < count; i++) {
+                const block = document.getElementById(`pool-block-${blocksUsed + i}`);
+                if (block) {
+                    setTimeout(() => {
+                        block.classList.add('used');
+                    }, i * 10);
+                }
+            }
+
+            // Add blocks to each container
+            const blocksPerContainer = Math.floor(count / divisor);
+            for (let c = 0; c < divisor; c++) {
+                const container = document.getElementById(`container-${c}`);
+                if (container) {
+                    for (let b = 0; b < blocksPerContainer; b++) {
+                        setTimeout(() => {
+                            const block = document.createElement('div');
+                            block.className = 'container-block filled';
+                            container.appendChild(block);
+                        }, (c * blocksPerContainer + b) * 15);
+                    }
+                }
+            }
+
+            blocksUsed += count;
         }
 
         function renderDivision() {
@@ -1297,9 +1496,8 @@
                 }
 
                 const digits = row.value.toString().split('');
-                // Align so the rightmost digit of the value is under row.position
                 const totalSlots = dividendDigits.length;
-                const rightmostPosition = row.position; // where the last digit should go
+                const rightmostPosition = row.position;
                 const startPosition = rightmostPosition - digits.length + 1;
                 
                 for (let i = 0; i < startPosition; i++) {
@@ -1319,7 +1517,6 @@
                     div.appendChild(span);
                 });
                 
-                // Add trailing spaces to fill remaining slots
                 const endPosition = startPosition + digits.length;
                 for (let i = endPosition; i < totalSlots; i++) {
                     const spacer = document.createElement('span');
@@ -1405,7 +1602,9 @@
             document.getElementById('inputRow').innerHTML = `
                 <input type="number" class="answer-input" id="answerInput" min="0" max="10" autofocus>
                 <button class="check-btn" onclick="handleEstimate()">Check</button>
-                <button class="header-btn btn-help" onclick="openMultChart()">📊 Times Table</button>
+                <button class="mult-chart-btn" onclick="openMultChart()">
+                    <img src="MultiplicationTable.png" alt="Times Table">
+                </button>
                 ${helperBtn}
             `;
 
@@ -1428,6 +1627,11 @@
                 
                 renderDivision();
                 document.getElementById('conceptResult').textContent = runningQuotient;
+                
+                // Distribute blocks to containers
+                const placeValue = Math.pow(10, dividendDigits.length - currentPosition - 1);
+                const blocksToDistribute = answer * placeValue;
+                distributeBlocks(blocksToDistribute);
                 
                 showFeedback('success', 'Correct!');
                 setTimeout(() => { step = 'multiply'; nextStep(); }, 700);
@@ -1465,7 +1669,6 @@
             const area = document.getElementById('estInputArea');
             area.innerHTML = '';
             
-            // Auto focus helper
             const addInput = (handler) => {
                  area.innerHTML = `
                     <input type="number" class="answer-input" id="estInput" autofocus>
@@ -1477,18 +1680,15 @@
             };
 
             if (estStep === 1) {
-                // Round Divisor
                 const target = Math.round(divisor / 10) * 10;
                 prompt.innerHTML = `Let's make this easier. Round <strong>${divisor}</strong> to the nearest 10.`;
                 addInput('handleEstRoundDivisor');
             } 
             else if (estStep === 2) {
-                // Round Dividend
                 prompt.innerHTML = `Now, round <strong>${currentNumber}</strong> to the nearest 10.`;
                 addInput('handleEstRoundDividend');
             } 
             else if (estStep === 3) {
-                // Estimate based on rounded values
                 const est = Math.floor(roundedDividend / roundedDivisor);
                 const smallDiv = roundedDivisor / 10;
                 const smallDivd = roundedDividend / 10;
@@ -1497,7 +1697,6 @@
                 addInput('handleEstEstimate');
             } 
             else if (estStep === 4) {
-                // Success!
                 const est = Math.floor(roundedDividend / roundedDivisor);
                 prompt.innerHTML = `Great! Try <strong>${est}</strong> for the real problem.`;
                 area.innerHTML = `<button class="check-btn" onclick="applyEstimation(${est})">Use ${est}</button>`;
@@ -1545,7 +1744,6 @@
         function handleEstEstimate() {
             const val = parseInt(document.getElementById('estInput').value);
             const target = Math.floor(roundedDividend / roundedDivisor);
-            // Allow +/- 1 for estimation looseness
             if (Math.abs(val - target) <= 1 || val === target) {
                 estFeedback('success', 'Excellent!');
                 estStep = 4;
@@ -1565,7 +1763,6 @@
             if (mainInput) {
                 mainInput.value = val;
                 mainInput.focus();
-                // We don't auto-submit, letting them click check to verify it works for the real numbers
             }
         }
 
@@ -1663,10 +1860,9 @@
         }
 
         function initBringDown() {
-            // Prepare for the manual interaction
             currentPosition++;
             step = 'waiting-for-bring-down';
-            renderDivision(); // This will trigger the button rendering in the dividend row
+            renderDivision();
             nextStep();
         }
 
@@ -1709,16 +1905,13 @@
                 : `You split ${dividend} into ${divisor} equal piles of ${quotient}!`;
             document.getElementById('pileSummary').textContent = summaryText;
 
-            // Create victory piles
             const victoryContainer = document.getElementById('victoryPiles');
             victoryContainer.innerHTML = '';
             
-            // Remove previous scaling classes
             victoryContainer.classList.remove('compact', 'tiny');
 
-            // Determine scaling based on pile count (divisor)
-            let blockSize = 8; // default block size in pixels
-            let gap = 2; // gap between blocks
+            let blockSize = 8;
+            let gap = 2;
             
             if (divisor > 30) {
                 victoryContainer.classList.add('tiny');
@@ -1730,16 +1923,10 @@
                 gap = 1;
             }
             
-            // Create piles with visual blocks
             for (let i = 0; i < divisor; i++) {
                 const pile = document.createElement('div');
                 pile.className = 'victory-pile';
                 
-                // Calculate grid dimensions for blocks
-                const blocksPerRow = divisor > 30 ? 3 : (divisor > 12 ? 4 : 5);
-                const rows = Math.ceil(quotient / blocksPerRow);
-                
-                // Generate block grid HTML
                 let blocksHTML = '';
                 for (let b = 0; b < quotient; b++) {
                     blocksHTML += `<div class="pile-block" style="width: ${blockSize}px; height: ${blockSize}px; margin: ${gap}px;"></div>`;
@@ -1754,7 +1941,6 @@
                 victoryContainer.appendChild(pile);
             }
             
-            // Add remainder blocks if any
             if (remainder > 0) {
                 const remainderSection = document.createElement('div');
                 remainderSection.className = 'remainder-section';
@@ -1778,13 +1964,12 @@
 
             document.getElementById('completion').classList.add('show');
 
-            // Animate blocks appearing
             setTimeout(() => {
                 document.querySelectorAll('.pile-block, .remainder-block').forEach((block, i) => {
                     setTimeout(() => {
                         block.style.opacity = '1';
                         block.style.transform = 'scale(1)';
-                    }, i * 15); // Stagger the animation
+                    }, i * 15);
                 });
             }, 300);
         }
