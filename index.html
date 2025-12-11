@@ -37,7 +37,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
@@ -375,17 +375,8 @@
 
         .problem-layout {
             display: grid;
-            grid-template-columns: 1fr 280px;
+            grid-template-columns: 1fr;
             gap: 24px;
-        }
-
-        @media (max-width: 900px) {
-            .problem-layout {
-                grid-template-columns: 1fr;
-            }
-            .visual-sidebar {
-                order: -1;
-            }
         }
 
         /* Main work area */
@@ -394,101 +385,9 @@
             border-radius: 16px;
             padding: 24px;
             box-shadow: 0 4px 12px var(--shadow);
-        }
-
-        /* Visual Sidebar */
-        .visual-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .visual-card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 12px var(--shadow);
-        }
-
-        .visual-card h3 {
-            font-size: 1rem;
-            margin-bottom: 12px;
-            color: var(--text-muted);
-            text-align: center;
-        }
-
-        /* Blocks pool */
-        .blocks-pool {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 3px;
-            min-height: 80px;
-            padding: 12px;
-            background: #f5f5f5;
-            border-radius: 10px;
-            justify-content: center;
-        }
-
-        .pool-block {
-            width: 8px;
-            height: 8px;
-            background: var(--blue);
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
-
-        .pool-block.used {
-            opacity: 0.2;
-        }
-
-        /* Containers */
-        .containers-area {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-        }
-
-        .container-box {
-            width: 50px;
-            height: 60px;
-            background: #e8f5e9;
-            border: 2px solid var(--green);
-            border-radius: 8px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 4px;
-        }
-
-        .container-blocks {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2px;
-            justify-content: center;
-            flex: 1;
-        }
-
-        .container-block {
-            width: 6px;
-            height: 6px;
-            background: var(--green);
-            border-radius: 1px;
-            opacity: 0;
-            transform: scale(0);
-            transition: all 0.3s ease;
-        }
-
-        .container-block.filled {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .container-label {
-            font-size: 0.65rem;
-            color: var(--green);
-            font-weight: 600;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         /* Concept banner */
@@ -1214,17 +1113,6 @@
                         <button class="header-btn btn-green" id="newProblemBtn">New Problem</button>
                     </div>
                 </div>
-
-                <div class="visual-sidebar">
-                    <div class="visual-card">
-                        <h3>Blocks to Sort</h3>
-                        <div class="blocks-pool" id="blocksPool"></div>
-                    </div>
-                    <div class="visual-card">
-                        <h3>Containers</h3>
-                        <div class="containers-area" id="containersArea"></div>
-                    </div>
-                </div>
             </div>
         </div>
         
@@ -1260,7 +1148,6 @@
         let step = 'check-fit';
         let currentQuotientDigit = 0;
         let runningQuotient = 0;
-        let blocksUsed = 0;
 
         // Estimation Helper State
         let estStep = 0;
@@ -1373,7 +1260,6 @@
             attempts = 0;
             step = 'check-fit';
             runningQuotient = 0;
-            blocksUsed = 0;
 
             setupScreen.style.display = 'none';
             problemScreen.style.display = 'block';
@@ -1386,65 +1272,8 @@
             document.getElementById('conceptPiles').textContent = divisor;
             document.getElementById('conceptResult').textContent = '?';
 
-            // Initialize visual sidebar
-            initializeVisualSidebar();
-
             renderDivision();
             nextStep();
-        }
-
-        function initializeVisualSidebar() {
-            // Create blocks pool
-            const pool = document.getElementById('blocksPool');
-            pool.innerHTML = '';
-            for (let i = 0; i < dividend; i++) {
-                const block = document.createElement('div');
-                block.className = 'pool-block';
-                block.id = `pool-block-${i}`;
-                pool.appendChild(block);
-            }
-
-            // Create containers
-            const containers = document.getElementById('containersArea');
-            containers.innerHTML = '';
-            for (let i = 0; i < divisor; i++) {
-                const container = document.createElement('div');
-                container.className = 'container-box';
-                container.innerHTML = `
-                    <div class="container-blocks" id="container-${i}"></div>
-                    <div class="container-label">${i + 1}</div>
-                `;
-                containers.appendChild(container);
-            }
-        }
-
-        function distributeBlocks(count) {
-            // Mark blocks as used
-            for (let i = 0; i < count; i++) {
-                const block = document.getElementById(`pool-block-${blocksUsed + i}`);
-                if (block) {
-                    setTimeout(() => {
-                        block.classList.add('used');
-                    }, i * 10);
-                }
-            }
-
-            // Add blocks to each container
-            const blocksPerContainer = Math.floor(count / divisor);
-            for (let c = 0; c < divisor; c++) {
-                const container = document.getElementById(`container-${c}`);
-                if (container) {
-                    for (let b = 0; b < blocksPerContainer; b++) {
-                        setTimeout(() => {
-                            const block = document.createElement('div');
-                            block.className = 'container-block filled';
-                            container.appendChild(block);
-                        }, (c * blocksPerContainer + b) * 15);
-                    }
-                }
-            }
-
-            blocksUsed += count;
         }
 
         function renderDivision() {
@@ -1627,11 +1456,6 @@
                 
                 renderDivision();
                 document.getElementById('conceptResult').textContent = runningQuotient;
-                
-                // Distribute blocks to containers
-                const placeValue = Math.pow(10, dividendDigits.length - currentPosition - 1);
-                const blocksToDistribute = answer * placeValue;
-                distributeBlocks(blocksToDistribute);
                 
                 showFeedback('success', 'Correct!');
                 setTimeout(() => { step = 'multiply'; nextStep(); }, 700);
