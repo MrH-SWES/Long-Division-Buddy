@@ -11,7 +11,7 @@
             --card: #ffffff;
             --blue: #4285f4;
             --blue-dark: #3367d6;
-            --yellow: #f4b400;
+            --yellow: #f4b400; /* Kept for specific highlights, but removed from main UI elements */
             --yellow-dark: #db9e00;
             --coral: #ea4335;
             --coral-light: #f87171;
@@ -101,15 +101,6 @@
             background: var(--green-dark);
         }
 
-        .btn-yellow {
-            background: var(--yellow);
-            color: var(--text);
-        }
-
-        .btn-yellow:hover {
-            background: var(--yellow-dark);
-        }
-
         /* Setup Screen */
         .setup-screen {
             display: flex;
@@ -173,6 +164,7 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
+            margin-bottom: 24px;
         }
 
         .input-group label {
@@ -203,6 +195,7 @@
             flex-direction: column;
             align-items: center;
             padding: 24px 0;
+            margin-bottom: 12px;
         }
 
         .house-visual {
@@ -224,7 +217,8 @@
             border: 3px solid #e5e5e5;
             border-radius: 10px;
             margin-right: 8px;
-            background: var(--yellow);
+            /* UPDATED: Removed yellow background for cleaner look */
+            background: white;
             color: var(--text);
         }
 
@@ -264,29 +258,6 @@
             font-size: 0.9rem;
             color: var(--text-muted);
             text-align: center;
-        }
-
-        /* Checkbox */
-        .checkbox-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 20px 0;
-            padding: 12px 16px;
-            background: #f5f5f5;
-            border-radius: 10px;
-        }
-
-        .checkbox-row input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
-            accent-color: var(--blue);
-            cursor: pointer;
-        }
-
-        .checkbox-row label {
-            font-size: 0.95rem;
-            cursor: pointer;
         }
 
         /* Buttons */
@@ -457,7 +428,9 @@
             justify-content: center;
             padding: 8px 12px;
             margin-right: 4px;
-            background: var(--yellow);
+            /* UPDATED: Removed yellow background */
+            background: transparent;
+            color: var(--text);
             border-radius: 8px;
             font-weight: 700;
             min-width: 50px;
@@ -484,7 +457,7 @@
         }
 
         .digit.highlight {
-            background: var(--yellow);
+            background: #fff8e1; /* Very light yellow, barely visible */
         }
 
         .digit.active {
@@ -999,11 +972,6 @@
                     </div>
                 </div>
 
-                <div class="checkbox-row">
-                    <input type="checkbox" id="useRemainder">
-                    <label for="useRemainder">My answer might have a remainder</label>
-                </div>
-
                 <button class="setup-btn btn-start" id="startBtn">Start</button>
                 <button class="setup-btn btn-random" id="randomBtn">Random Problem</button>
 
@@ -1183,7 +1151,9 @@
         function generateProblem() {
             const divisorDigitCount = parseInt(document.getElementById('divisorDigits').value);
             const dividendDigitCount = parseInt(document.getElementById('dividendDigits').value);
-            const useRemainder = document.getElementById('useRemainder').checked;
+            
+            // UPDATED: Randomly decide if there should be a remainder (50/50 chance)
+            const useRemainder = Math.random() > 0.5;
 
             const divisorMin = divisorDigitCount === 1 ? 2 : 10;
             const divisorMax = divisorDigitCount === 1 ? 9 : 99;
